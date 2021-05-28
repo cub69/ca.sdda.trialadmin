@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<menu>
+  <item>
+    <path>civicrm/TrialAdmin</path>
+    <page_callback>CRM_Trialadmin_Page_TrialAdmin</page_callback>
+    <title>TrialAdmin</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
+  <item>
+    <path>civicrm/event/manage/TrialAdmin</path>
+    <page_callback>CRM_Trialadmin_Page_TrialAdmin</page_callback>
+    <title>TrialAdmin</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
+  <item>
+    <path>civicrm/event/manage/TrialAdmin/trialdetails</path>
+    <page_callback>CRM_Trialadmin_Form_TrialDetails</page_callback>
+    <title>TrialDetails</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
+  <item>
+    <path>civicrm/EditComponent</path>
+    <page_callback>CRM_Trialadmin_Form_EditComponent</page_callback>
+    <title>EditComponent</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
+</menu>

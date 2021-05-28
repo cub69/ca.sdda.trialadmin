@@ -1,0 +1,90 @@
+<div class="crm-container">
+  <div crm-ui-debug="$ctrl.myEvent"></div>
+
+  <h1 crm-page-title>Trial Administration</h1>
+  
+  <form name="myForm" crm-ui-id-scope>
+
+  <div crm-ui-accordion="{title: ts('Host Information')}">
+    <div class="crm-block">
+      <div class="crm-group">
+        <div crm-ui-field="{name: 'myForm.Requester_RP', title: ts('RP No.'), help: hs('Requester_RP')}">
+          <input
+            crm-ui-id="myForm.Requester_RP"
+            name="Requester_RP"
+            ng-model="$ctrl.myEvent.Requester_RP"
+            class="crm-form-text"
+            placeholder="{{ts('First')}}"
+            />
+        </div>
+        <div crm-ui-field="{name: 'myForm.Requester_Name', title: ts('Name'), help: hs('Requester_Name')}">
+          
+          <input
+            crm-ui-id="myForm.Requester_Name"
+            name="Requester_Name"
+            ng-model="$ctrl.myEvent.Requester_Name"
+            class="crm-form-text"
+            placeholder="{{ts('First')}}"
+            />
+          
+            <input
+              crm-ui-id="myForm.Requester_lastname"
+              name="Requester_lastname"
+              ng-model="$ctrl.myEvent.Requester_lastname"
+              class="crm-form-text"
+              placeholder="{{ts('First')}}"
+              />
+            <input
+            crm-ui-id="myForm.Requester_email"
+            name="Requester_email"
+            ng-model="$ctrl.myEvent.Requester_email"
+            class="crm-form-text"
+            placeholder="{{ts('First')}}"
+            />
+          </div>
+          <div crm-ui-field="{name: 'myForm.Requester', title: ts('Requester'), help: hs('Requester')}">
+            <input 
+              crm-entityref="{entity: '$ctrl.myEvent.Requester', select:{allowClear: true, placeholder: ts('Select')}, static: $ctrl.myEvent.Requester === 'Contact' ? ['user_contact_id'] : []}" 
+              crm-ui-id="myForm.Requester"
+              name="Requester"
+              ng-model="$ctrl.myEvent.Requester" 
+              class="crm-entityref"/>
+          </div>
+              
+        </div>
+      </div>
+      
+  <div crm-ui-accordion="{title: ts('Location Information')}">
+    <div class="crm-block">
+      <div class="crm-group">
+        <div crm-ui-field="{name: 'myForm.Location_name', title: ts('Location name'), help: hs('Location_name')}">
+          <input
+            crm-ui-id="myForm.Location_name"
+            name="Location_name"
+            ng-model="$ctrl.myEvent.Location_name"
+            class="crm-form-text"
+            placeholder="{{ts('First')}}"
+            />
+          </div>
+          <div crm-ui-field="{name: 'myForm.Street_address', title: ts('Street Address'), help: hs('Street_address')}">
+            <input
+              crm-ui-id="myForm.Street_address"
+              name="Street_address"
+              ng-model="$ctrl.myEvent.Street_address"
+              class="crm-form-text"
+              placeholder="{{ts('First')}}"
+              />
+          </div>
+          <div crm-ui-field="{name: 'myForm.Location_city', title: ts('City'), help: hs('Location_city')}">
+            <input
+              crm-ui-id="myForm.Location_city"
+              name="Location_city"
+              ng-model="$ctrl.myEvent.Location_city"
+              class="crm-form-text"
+              placeholder="{{ts('First')}}"
+              />
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>

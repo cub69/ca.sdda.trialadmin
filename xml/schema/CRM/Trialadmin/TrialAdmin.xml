@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+<table>
+  <base>CRM/Trialadmin</base>
+  <class>TrialAdmin</class>
+  <name>civicrm_trial_admin</name>
+  <comment>Trial Details provided by Hosts</comment>
+  <log>true</log>
+
+  <field>
+    <name>id</name>
+    <type>int unsigned</type>
+    <required>true</required>
+    <comment>Unique TrialAdmin ID</comment>
+    <html>
+      <type>Number</type>
+    </html>
+  </field>
+  <primaryKey>
+    <name>id</name>
+    <autoincrement>true</autoincrement>
+  </primaryKey>
+
+  <field>
+    <name>event_id</name>
+    <type>int unsigned</type>
+    <comment>FK to Event</comment>
+  </field>
+  <foreignKey>
+    <name>event_id</name>
+    <table>civicrm_event</table>
+    <key>id</key>
+    <onDelete>CASCADE</onDelete>
+  </foreignKey>
+  <field>
+    <name>Requester</name>
+    <type>int unsigned</type>
+    <comment>FK to Contact</comment>
+  </field>
+  <foreignKey>
+    <name>Requester</name>
+    <table>civicrm_contact</table>
+    <key>id</key>
+    <onDelete>CASCADE</onDelete>
+  </foreignKey>
+<field>
+  <name>hosting_club</name>
+  <type>text</type>
+  <comment>Club hosting trial</comment>
+  <html>
+    <Type>Text</Type>
+  </html>
+</field>
+<field>
+  <name>Requester_RP</name>
+  <type>int</type>
+  <comment>Requester RP Number</comment>
+  <html>
+    <type>text</type>
+  </html>
+</field>
+<field>
+  <name>Requester_Name</name>
+  <type>text</type>
+  <comment>Requester Name</comment>
+  <html>
+    <type>text</type>
+  </html>
+</field>
+<field>
+  <name>Requester_lastname</name>
+  <type>text</type>
+  <comment>Requester last name</comment>
+  <html>
+    <type>text</type>
+  </html>
+</field>
+<field>
+  <name>Requester_email</name>
+  <type>text</type>
+  <comment>Requester email address</comment>
+  <html>
+    <type>text</type>
+  </html>
+</field>
+<field>
+  <name>Location_name</name>
+  <type>text</type>
+  <comment>Name of Trial Location</comment>
+  <html>
+    <type>text</type>
+  </html>
+</field>
+<field>
+  <name>Street_address</name>
+  <type>text</type>
+  <comment>Location Street Address</comment>
+  <html>
+    <type>text</type>
+  </html>
+</field>
+<field>
+  <name>Location_city</name>
+  <type>text</type>
+  <comment>Location City</comment>
+  <html>
+    <type>text</type>
+  </html>
+</field>
+<field>
+  <name>Location_province</name>
+  <type>text</type>
+  <pseudoconstant>
+    <table>civicrm_state_province</table>
+    <keyColumn>id</keyColumn>
+    <labelColumn>name</labelColumn>
+    <nameColumn>abbreviation</nameColumn>
+    <condition>country_id = 1039</condition>
+  </pseudoconstant>
+  <comment>Location Province</comment>
+  <html>
+    <type>select</type>
+  </html>
+</field>
+<field>
+  <name>Location_country</name>
+  <type>text</type>
+  <comment>Location Country</comment>
+  <html>
+    <type>select</type>
+  </html>
+</field>
+<field>
+  <name>trial_chairperson</name>
+  <type>int unsigned</type>
+  <pseudoconstant>
+    <table>civicrm_contact</table>
+    <keyColumn>id</keyColumn>
+    <labelColumn>legal_name</labelColumn>
+    <condition>contact_type = "Individual"</condition>
+  </pseudoconstant>
+  <comment>Trial Charperson</comment>
+  <html>
+    <type>select</type>
+  </html>
+</field>
+<foreignKey>
+    <name>trial_chairperson</name>
+    <table>civicrm_contact</table>
+    <key>id</key>
+    <onDelete>CASCADE</onDelete>
+  </foreignKey>
+<field>
+  <name>trial_secretary</name>
+  <type>int unsigned</type>
+  <pseudoconstant>
+    <table>civicrm_contact</table>
+    <keyColumn>id</keyColumn>
+    <labelColumn>legal_name</labelColumn>
+    <condition>contact_type = "Individual"</condition>
+  </pseudoconstant>
+  <comment>Trial Secretary</comment>
+  <html>
+    <type>select</type>
+  </html>
+</field>
+<foreignKey>
+    <name>trial_secretary</name>
+    <table>civicrm_contact</table>
+    <key>id</key>
+    <onDelete>CASCADE</onDelete>
+  </foreignKey>
+
+<field>
+  <name>venue_description</name>
+  <type>text</type>
+  <comment>Venue Description</comment>
+  <html>
+    <type>TextArea</type>
+  </html>
+</field>
+<field>
+  <name>space_for_containers</name>
+  <type>text</type>
+  <comment>Space for Containers Description</comment>
+  <html>
+    <type>TextArea</type>
+  </html>
+</field>
+<field>
+  <name>space_for_interior</name>
+  <type>text</type>
+  <comment>Space for Interior Search Area Description</comment>
+  <html>
+    <type>TextArea</type>
+  </html>
+</field>
+<field>
+  <name>space_for_exterior</name>
+  <type>text</type>
+  <comment>Space for Exterior Search Area Description</comment>
+  <html>
+    <type>TextArea</type>
+  </html>
+</field>
+<field>
+  <name>staging_and_crating</name>
+  <type>text</type>
+  <comment>Space for Staging and Craiting Description</comment>
+  <html>
+    <type>TextArea</type>
+  </html>
+</field>
+<field>
+  <name>space_for_secretary</name>
+  <type>text</type>
+  <comment>Space for Secretary Description</comment>
+  <html>
+    <type>TextArea</type>
+  </html>
+</field>
+<field>
+  <name>space_for_judge</name>
+  <type>text</type>
+  <comment>Space for Judge Description</comment>
+  <html>
+    <type>TextArea</type>
+  </html>
+</field>
+<field>
+  <name>confirm_square_footage</name>
+  <type>tinyint</type>
+  <comment>Confirm appropriate square footage is available</comment>
+  <html>
+    <type>CheckBox</type>
+  </html>
+</field>
+<field>
+  <name>confirm_judge_contacted</name>
+  <type>tinyint</type>
+  <comment>Confirm you have gone through the venue plans with your judge(s)</comment>
+  <html>
+    <type>CheckBox</type>
+  </html>
+</field>
+</table>

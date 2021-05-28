@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+<table>
+  <base>CRM/Trialadmin</base>
+  <class>TrialComponents</class>
+  <name>civicrm_trial_components</name>
+  <comment>FIXME</comment>
+  <log>true</log>
+
+  <field>
+    <name>id</name>
+    <type>int unsigned</type>
+    <required>true</required>
+    <comment>Unique TrialComponents ID</comment>
+    <html>
+      <type>Number</type>
+    </html>
+  </field>
+  <primaryKey>
+    <name>id</name>
+    <autoincrement>true</autoincrement>
+  </primaryKey>
+
+  <field>
+    <name>event_id</name>
+    <type>int unsigned</type>
+    <comment>FK to Event</comment>
+  </field>
+  <foreignKey>
+    <name>event_id</name>
+    <table>civicrm_event</table>
+    <key>id</key>
+    <onDelete>CASCADE</onDelete>
+  </foreignKey>
+<field>
+  <name>trial_number</name>
+  <type>int unsigned</type>
+  <comment>Trial Number</comment>
+  <html>
+    <type>int unsigned</type>
+  </html>
+</field>
+<field>
+  <name>trial_date</name>
+  <type>datetime</type>
+  <comment>Date of this Trial Event</comment>
+  <html>
+    <type>datetime</type>
+  </html>
+</field>
+<field>
+  <name>judge</name>
+  <type>int unsigned</type>
+  <pseudoconstant>
+    <table>civicrm_contact</table>
+    <keyColumn>id</keyColumn>
+    <labelColumn>legal_name</labelColumn>
+    <condition>contact_type = "Individual"</condition>
+  </pseudoconstant>
+  <comment>Judge</comment>
+  <html>
+    <type>select</type>
+  </html>
+</field>
+<foreignKey>
+    <name>judge</name>
+    <table>civicrm_contact</table>
+    <key>id</key>
+    <onDelete>CASCADE</onDelete>
+</foreignKey>
+<field>
+  <name>started_components</name>
+  <type>text</type>
+  <comment>Started components</comment>
+  <html>
+    <type>text</type>
+  </html>
+</field>
+<field>
+  <name>advanced_components</name>
+  <type>text</type>
+  <comment>advanced components</comment>
+  <html>
+    <type>text</type>
+  </html>
+</field>
+<field>
+  <name>excellent_components</name>
+  <type>text</type>
+  <comment>Excellent components</comment>
+  <html>
+    <type>text</type>
+  </html>
+</field>
+<field>
+  <name>elite_offered</name>
+  <type>tinyint</type>
+  <comment>Started components</comment>
+  <html>
+    <type>checkbox</type>
+  </html>
+</field>
+<field>
+  <name>games_components</name>
+  <type>int unsigned</type>
+  <comment>Games components</comment>
+  <html>
+    <type>text</type>
+  </html>
+</field>
+</table>
