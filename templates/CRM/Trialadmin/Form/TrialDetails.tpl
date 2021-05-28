@@ -59,7 +59,7 @@ function deleteComponent(id){
 <td>{$component.excellent_components}</td>
 <td>{$component.elite_offered}</td>
 <td>{$component.games_components}</td>
-<td><a href="{$url}&reset=1&action=update&id={$component.id}" class="crm-popup"> Edit </a><a href="javascript:deleteComponent({$component.id})"> Delete </a></td></tr>
+<td><a href="{crmURL p='civicrm/EditComponent' q='reset=1&action=update&id=2'}" class="crm-popup"> Edit </a><a href="javascript:deleteComponent({$component.id})"> Delete </a></td></tr>
 {/foreach}
 <a title="Add a Component" class="button_name button crm-popup" href="{$url}?reset=1&action=add&id={$event_id}">
   <span>Add Component</span>

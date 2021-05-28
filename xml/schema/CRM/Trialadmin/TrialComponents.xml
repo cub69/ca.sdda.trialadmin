@@ -102,7 +102,7 @@
 </field>
 <field>
   <name>games_components</name>
-  <type>int unsigned</type>
+  <type>text</type>
   <comment>Games components</comment>
   <html>
     <type>text</type>

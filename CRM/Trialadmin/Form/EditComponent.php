@@ -9,94 +9,53 @@ use CRM_TrialAdmin_ExtensionUtil as E;
  */ 
 class CRM_TrialAdmin_Form_EditComponent extends CRM_Core_Form {
 
-public $_id;
-public $_action;
-public $_event_id;
+  public $_id;
+  public $_action;
+  //public $_event_id;
 
   public function preProcess() {
-	// do prep work  
-//$this->preventAjaxSubmit();
+	  // do prep work  
+    $this->preventAjaxSubmit();
 
-	CRM_Utils_System::setTitle(E::ts('Edit Component'));
-	$this->_action = CRM_Utils_Request::retrieve('action', 'String', $this);	
-	error_log($this->_action);
-  if ($this->_action == 2) {
-		$this->_id = CRM_Utils_Request::retrieve('id', 'Positive', $this, TRUE);
-		$components = civicrm_api3('TrialComponents', 'get', ['id' => $this->_id,]);
-		$component = $component['values'][$this->_id];
-
-		$this->setDefaults(array( 
-        'event_id' => $component('event_id'),
-        'trial_number' => $component('trial_number'),
-        'trial_date' => $component('trial_date'),
-        'judge' => $component('judge'),
-//        'started_components' => $component('started_components'),
-//        'advanced_components' => $component('advanced_components'),
-//        'excellent_components' => $component('excellent_components'),
-//        'elite_offered' => $component('elite_offered'),
-//        'games_components' => $component('games_components'),
-		));
-	} elseif ($this->_action == 1) {
-		$this->_id = CRM_Utils_Request::retrieve('id', 'Positive', $this, TRUE);
-	}
-}
+	  CRM_Utils_System::setTitle(E::ts('Edit Component'));
+	  $this->_action = CRM_Utils_Request::retrieve('action', 'String', $this);	
+	  error_log("The action of this record is: ".$this->_action);
+    
+    if ($this->_action == 2) {
+      $this->_id = CRM_Utils_Request::retrieve('id', 'Positive', $this, TRUE);
+      error_log("The ID of this record is: ".$this->_id);
+      $components = civicrm_api3('TrialComponents', 'get', ['id' => $this->_id,]);
+      
+        $component = $components['values'][$this->_id];
+        error_log(print_r($component,TRUE));
+        $this->setDefaults(array( 
+            'event_id' => $component['event_id'],
+            'trial_number' => $component['trial_number'],
+            'trial_date' => $component['trial_date'],
+            'judge' => $component['judge'],
+            'started_components' => $component['started_components'],
+            'advanced_components' => $component['advanced_components'],
+            'excellent_components' => $component['excellent_components'],
+            'elite_offered' => $component['elite_offered'],
+            'games_components' => $component['games_components'],
+        ));
+    } elseif ($this->_action == 1) {
+          $this->_id = CRM_Utils_Request::retrieve('id', 'Positive', $this, TRUE);
+      }
+  }
 
   public function buildQuickForm() {
 	  
 	 // add form elements
-   $this->add(
-		'int unsigned',
-		'trial_number',
-		ts('Component Date'),
-      TRUE
-	  );
-   $this->add(
-		'date',
-		'Trial_Date',
-		ts('Trial Date'),
-      CRM_Core_SelectValues::date(NULL, 'Y M d',15,1)
-	  );
-    $this->add(
-      'text',
-      'judge',
-      'Judge',
-      TRUE
-    );
-/*    $this->add(
-      'multiselect',
-      'started_components',
-      'Started Components',
-      $this->getOptions("Reg_components"),
-      TRUE
-    );
-    $this->add(
-      'multiselect',
-      'advanced_components',
-      'Advanced Components',
-      $this->getOptions("Reg_components"),
-      TRUE
-    );
-    $this->add(
-      'multiselect',
-      'excellent_components',
-      'Excellent Components',
-      $this->getOptions("Reg_components"),
-      TRUE
-    );
-    $this->add(
-      'checkbox',
-      'elite_offered',
-      'Elite Offered',
-      TRUE
-    );
-    $this->add(
-      'multiselect',
-      'games_components',
-      'Games Components',
-      $this->getOptions("Game_components"),
-      TRUE
-    );  
-	*/
+   $this->add('text','trial_number','Trial Number',TRUE);
+   $this->add('date','Trial_Date',ts('Trial Date'),CRM_Core_SelectValues::date(NULL, 'Y M d',15,1) );
+    $this->addEntityRef('judge',ts('Assigned Judge'));
+    $this->add('select2','started_components','Started Components',$this->getOptions("regComponents"),FALSE);
+    $this->add('advmultiselect','advanced_components','Advanced Components',$this->getOptions("regComponents"),FALSE);
+    $this->add('advmultiselect','excellent_components','Excellent Components',$this->getOptions("regComponents"),FALSE);
+    $this->add('checkbox','elite_offered','Elite Offered',FALSE);
+    $this->add('advmultiselect','games_components','Games Components',$this->getOptions("gameComponents"),FALSE);  
+	
     $this->addButtons(array(
       array(
         'type' => 'done',
@@ -110,7 +69,7 @@ public $_event_id;
       ),
       
     ));
-
+    error_log("Entering the quickform after build");
     // export form elements
     $this->assign('elementNames', $this->getRenderableElementNames());
     parent::buildQuickForm();
@@ -130,11 +89,11 @@ public $_event_id;
 		'trial_number' => $values['trial_number'],
 		'trial_date' => $values['trial_date'],
     'judge' => $values['judge'],
- //   'started_components' => $values['started_components'],
- //   'advanced_components' => $values['advanced_components'],
- //   'excellent_components' => $values['excellent_components'],
- //   'elite_offered' => $values['elite_offered'],
- //   'games_components' => $values['games_components'],
+    'started_components' => $values['started_components'],
+    'advanced_components' => $values['advanced_components'],
+    'excellent_components' => $values['excellent_components'],
+    'elite_offered' => $values['elite_offered'],
+    'games_components' => $values['games_components'],
 		
 		]); 
 		var_error_log($result);
@@ -145,11 +104,11 @@ public $_event_id;
       'trial_number' => $values['trial_number'],
       'trial_date' => $values['trial_date'],
       'judge' => $values['judge'],
- //     'started_components' => $values['started_components'],
- //     'advanced_components' => $values['advanced_components'],
- //     'excellent_components' => $values['excellent_components'],
- //     'elite_offered' => $values['elite_offered'],
- //     'games_components' => $values['games_components'],
+      'started_components' => $values['started_components'],
+      'advanced_components' => $values['advanced_components'],
+      'excellent_components' => $values['excellent_components'],
+      'elite_offered' => $values['elite_offered'],
+      'games_components' => $values['games_components'],
     ]) ;
 		var_error_log($result);
 
@@ -160,6 +119,16 @@ public $_event_id;
   }
 
   public function getOptions($optionType) {
+    if ($optionType =="gameComponents") {
+    	$goptions = array(
+      '' => E::ts('- select -'),
+      'Distance' => E::ts('Distance'),
+      'Speed' => E::ts('Speed'),
+      'Team' => E::ts('Team'),
+      'Aerial' => E::ts('Aerial'),
+    	);
+ 		return $goptions;
+     } 
   	if ($optionType =="regComponents") {
     	$options = array(
       '' => E::ts('- select -'),
@@ -170,16 +139,7 @@ public $_event_id;
     	);
  		return $options;
    
-   	if ($optionType =="GamesComponents") {
-    	$options = array(
-      '' => E::ts('- select -'),
-      'Distance' => E::ts('Distance'),
-      'Speed' => E::ts('Speed'),
-      'Team' => E::ts('Team'),
-      'Aerial' => E::ts('Aerial'),
-    	);
- 		return $options;
-     }
+   	
     }
   }
   /**
