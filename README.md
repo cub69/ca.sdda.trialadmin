@@ -2,7 +2,7 @@
 
 ![Screenshot](/images/Screenshot.png)
 
-(*FIXME: In one or two paragraphs, describe what the extension does and why one would download it. *)
+This is a very customized CiviCRM extension for the Sporting Detection Dogs Association. It is designed to better integrate the trial application process and add macro type buttons to the Administration tab. 
 
 The extension is licensed under [AGPL-3.0](LICENSE.txt).
 
