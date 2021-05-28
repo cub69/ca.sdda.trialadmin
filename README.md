@@ -1,6 +1,6 @@
 # ca.sdda.trialadmin
 
-![Screenshot](/images/screenshot.png)
+![Screenshot](/images/Screenshot.png)
 
 (*FIXME: In one or two paragraphs, describe what the extension does and why one would download it. *)
 
