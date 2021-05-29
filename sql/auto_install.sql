@@ -99,7 +99,7 @@ CREATE TABLE `civicrm_trial_components` (
      `advanced_components` text    COMMENT 'advanced components',
      `excellent_components` text    COMMENT 'Excellent components',
      `elite_offered` tinyint    COMMENT 'Started components',
-     `games_components` int unsigned    COMMENT 'Games components' 
+     `games_components` text    COMMENT 'Games components' 
 ,
         PRIMARY KEY (`id`)
  

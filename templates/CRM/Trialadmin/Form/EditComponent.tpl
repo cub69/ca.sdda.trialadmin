@@ -18,11 +18,13 @@ CRM.$(function($) {
 {* FIELD EXAMPLE: OPTION 1 (AUTOMATIC LAYOUT) *}
 
 {foreach from=$elementNames item=elementName}
-  <div class="crm-section">
+  {if $elementName != 'id' && $elementName != 'Event ID'}
+    <div class="crm-section">
     <div class="label">{$form.$elementName.label}</div>
     <div class="content">{$form.$elementName.html}</div>
     <div class="clear"></div>
-  </div>
+    </div>
+  {/if}
 {/foreach}
 
 {* FOOTER *}

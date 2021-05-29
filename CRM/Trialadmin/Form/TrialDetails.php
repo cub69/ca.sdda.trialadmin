@@ -56,12 +56,11 @@ class CRM_Trialadmin_Form_TrialDetails extends CRM_Core_Form {
           'confirm_judge_contacted' => $details['confirm_judge_contacted'],
           
       ));
-      
     } 
   }
   public function buildQuickForm() {
-    $this->add('hidden','id','id',TRUE);
-    $this->add('hidden','event_id','event_id',TRUE);
+    $this->add('text','id','id',TRUE);
+    $this->add('text','event_id','event_id',TRUE);
 
     $this->addEntityRef('Requester', ts('Select Contact'));
     $this->add('text','Requester_email','Requester Email',TRUE);

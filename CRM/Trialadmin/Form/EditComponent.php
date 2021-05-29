@@ -39,16 +39,25 @@ class CRM_TrialAdmin_Form_EditComponent extends CRM_Core_Form {
             'elite_offered' => $component['elite_offered'],
             'games_components' => $component['games_components'],
         ));
+        //error_log('Started components: '. print_r($component['started_components'], TRUE));
     } elseif ($this->_action == 1) {
-          $this->_id = CRM_Utils_Request::retrieve('id', 'Positive', $this, TRUE);
+          error_log("processing as new");    
+          $this->_eventid = CRM_Utils_Request::retrieve('eventid', 'Positive', $this, TRUE);
+          $this->setDefaults(array( 
+            'event_id' => $this->_eventid,
+          ));
+          error_log("processing as new completed setting defaults");
       }
   }
 
   public function buildQuickForm() {
 	  
 	 // add form elements
+   $this->add('text','event_id','Event ID', TRUE);
    $this->add('text','trial_number','Trial Number',TRUE);
-   $this->add('date','Trial_Date',ts('Trial Date'),CRM_Core_SelectValues::date(NULL, 'Y M d',0,1) );
+   $this->add('datepicker','trial_date', ts('Trial Date'), array('class' => 'some-css-class'), TRUE, array('time' => FALSE, 'date' => 'mm-dd-yy', 'minDate' => '2021-01-01') );
+  
+   //$this->add('date','Trial_Date',ts('Trial Date'),CRM_Core_SelectValues::date(NULL, 'Y M d',0,1) );
     $this->addEntityRef('judge',ts('Assigned Judge'));
     $this->add('select', 'started_components', ts('Started Components'), $this->getOptions("regComponents"), FALSE,
         array('id' => 'started_components', 'multiple' => 'multiple', 'class' => 'crm-select2 huge'));
@@ -80,52 +89,53 @@ class CRM_TrialAdmin_Form_EditComponent extends CRM_Core_Form {
   }
 
   public function postProcess() {
-      $values = $this->exportValues();
-      var_error_log($values);
-        
+    $values = $this->exportValues();
+    error_log("Post processing ...".print_r($values, TRUE));
+    $started_components = '';
+    $advanced_components = '';
+    $excellent_components = '';
+    $games_components = '';
+    foreach ($values['started_components'] as $value) {$started_components .= $value.', '; }
+    foreach ($values['advanced_components'] as $value) {$advanced_components .= $value.', '; }
+    foreach ($values['excellent_components'] as $value) {$excellent_components .= $value.', '; }
+    foreach ($values['games_components'] as $value) {$games_components .= $value.', '; }
     if ($values["_qf_EditComponent_submit"] = "Submit") {
-		error_log("Executing a save/update of data on ".print_r($values, TRUE));
-	  if ($this->_action == 2){
-    	$values["id"] = $this->_id;
-		$result = civicrm_api3('TrialComponents', 'create', [
-		'id' 	=> $values['id'],
-    'event_id' => $values['event_id'],
-		'trial_number' => $values['trial_number'],
-		'trial_date' => $values['trial_date'],
-    'judge' => $values['judge'],
-    'started_components' => $values['started_components'],
-    'advanced_components' => $values['advanced_components'],
-    'excellent_components' => $values['excellent_components'],
-    'elite_offered' => $values['elite_offered'],
-    'games_components' => $values['games_components'],
-		
-		]); 
-		error_log("writing results: ".print_r($result), TRUE);
-	 } elseif ($this->_action == 1) {
-    $result = civicrm_api3('TrialComponents', 'create', [
-      'id' 	=> $values['id'],
-      'event_id' => $values['event_id'],
-      'trial_number' => $values['trial_number'],
-      'trial_date' => $values['trial_date'],
-      'judge' => $values['judge'],
-      'started_components' => $values['started_components'],
-      'advanced_components' => $values['advanced_components'],
-      'excellent_components' => $values['excellent_components'],
-      'elite_offered' => $values['elite_offered'],
-      'games_components' => $values['games_components'],
-    ]) ;
-		error_log("writing results: ".print_r($result), TRUE);
+  	  if ($this->_action == 2){
+      	$values["id"] = $this->_id;
+		    $result = civicrm_api3('TrialComponents', 'create', [
+		      'id' 	=> $values['id'],
+          'event_id' => $values['event_id'],
+		      'trial_number' => $values['trial_number'],
+		      'trial_date' => $values['trial_date'],
+          'judge' => $values['judge'],
+          'started_components' => $started_components,
+          'advanced_components' => $advanced_components,
+          'excellent_components' => $excellent_components,
+          'elite_offered' => $values['elite_offered'],
+          'games_components' => $games_components,
+		    ]); 
+	    } elseif ($this->_action == 1) {
+        $result = civicrm_api3('TrialComponents', 'create', [
+          //'id' 	=> $values['id'],
+          'event_id' => $values['event_id'],
+          'trial_number' => $values['trial_number'],
+          'trial_date' => $values['trial_date'],
+          'judge' => $values['judge'],
+          'started_components' => $started_components,
+          'advanced_components' => $advanced_components,
+          'excellent_components' => $excellent_components,
+          'elite_offered' => $values['elite_offered'],
+          'games_components' => $games_components,
+        ]) ;
+      }
+    }
 
-   }
-}
-
-     parent::postProcess();
+    parent::postProcess();
   }
 
   public function getOptions($optionType) {
     if ($optionType =="gameComponents") {
     	$goptions = array(
-      '' => E::ts('- select -'),
       'Distance' => E::ts('Distance'),
       'Speed' => E::ts('Speed'),
       'Team' => E::ts('Team'),
@@ -135,15 +145,12 @@ class CRM_TrialAdmin_Form_EditComponent extends CRM_Core_Form {
      } 
   	if ($optionType =="regComponents") {
     	$options = array(
-      '' => E::ts('- select -'),
       'Containers' => E::ts('Containers'),
       'Interior' => E::ts('Interior'),
       'Exterior-vehicles' => E::ts('Exterior-vehicles'),
       'Exterior-area' => E::ts('Exterior-area'),
     	);
- 		return $options;
-   
-   	
+ 		return $options;	
     }
   }
   /**

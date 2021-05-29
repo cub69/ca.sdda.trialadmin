@@ -18,11 +18,13 @@ CRM.$(function($) {
 {* FIELD EXAMPLE: OPTION 1 (AUTOMATIC LAYOUT) *}
 
 {foreach from=$elementNames item=elementName}
-    <div class="crm-section">
-    <div class="label">{$form.$elementName.label}</div>
-    <div class="content">{$form.$elementName.html}</div>
-    <div class="clear"></div>
-  </div>
+    {if $elementName != 'id' && $elementName != 'event_id'}
+      <div class="crm-section">
+      <div class="label">{$form.$elementName.label}</div>
+      <div class="content">{$form.$elementName.html}</div>
+      <div class="clear"></div>
+      </div>
+    {/if}
 {/foreach}
 
 <h3>Trial Components</h3>
@@ -45,12 +47,10 @@ function deleteComponent(id){
 
 </script>
 {/literal}
-<table border='1' cellpadding='5' cellspacing='5'><tr class="crm-entity" id="TrialComponents" style='border-bottom: 1px solid black'><th>id</th><th>Event ID</th><th>Trial Number</th><th>Trial Date</th><th>Judge</th><th>Started</th><th>Advanced</th><th>Excellent</th><th>Elite Offered</th><th>Games</th></tr>
+<table border='1' cellpadding='5' cellspacing='5'><tr class="crm-entity" id="TrialComponents" style='border-bottom: 1px solid black'><th>Trial Number</th><th>Trial Date</th><th>Judge</th><th>Started</th><th>Advanced</th><th>Excellent</th><th>Elite Offered</th><th>Games</th></tr>
+{crmAPI var='result' entity='TrialComponents' action='get' event_id = $form.event_id.value}
 
-{crmAPI var='result' entity='TrialComponents' action='get' event_id = $event_id}
 {foreach from=$result.values item=component}
-<td>{$component.id}</td>
-<td >{$component.event_id}</td>
 <td>{$component.trial_number}</td>
 <td>{$component.trial_date}</td>
 <td>{$component.judge}</td>
@@ -59,9 +59,9 @@ function deleteComponent(id){
 <td>{$component.excellent_components}</td>
 <td>{$component.elite_offered}</td>
 <td>{$component.games_components}</td>
-<td><a href="{crmURL p='civicrm/EditComponent' q='reset=1&action=update&id=2'}" class="crm-popup"> Edit </a><a href="javascript:deleteComponent({$component.id})"> Delete </a></td></tr>
+<td><a href='{crmURL p="civicrm/EditComponent" q="reset=1&action=update&id=`$component.id`"}' class="crm-popup"> Edit </a><a href="javascript:deleteComponent({$component.id})"> Delete </a></td></tr>
 {/foreach}
-<a title="Add a Component" class="button_name button crm-popup" href="{$url}?reset=1&action=add&id={$event_id}">
+<a title="Add a Component" class="button_name button crm-popup" href='{crmURL p="civicrm/EditComponent" q="reset=1&action=add&eventid=`$form.event_id.value`"}'>
   <span>Add Component</span>
 </a>
 
