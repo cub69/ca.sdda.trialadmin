@@ -48,14 +48,18 @@ class CRM_TrialAdmin_Form_EditComponent extends CRM_Core_Form {
 	  
 	 // add form elements
    $this->add('text','trial_number','Trial Number',TRUE);
-   $this->add('date','Trial_Date',ts('Trial Date'),CRM_Core_SelectValues::date(NULL, 'Y M d',15,1) );
+   $this->add('date','Trial_Date',ts('Trial Date'),CRM_Core_SelectValues::date(NULL, 'Y M d',0,1) );
     $this->addEntityRef('judge',ts('Assigned Judge'));
-    $this->add('select2','started_components','Started Components',$this->getOptions("regComponents"),FALSE);
-    $this->add('advmultiselect','advanced_components','Advanced Components',$this->getOptions("regComponents"),FALSE);
-    $this->add('advmultiselect','excellent_components','Excellent Components',$this->getOptions("regComponents"),FALSE);
+    $this->add('select', 'started_components', ts('Started Components'), $this->getOptions("regComponents"), FALSE,
+        array('id' => 'started_components', 'multiple' => 'multiple', 'class' => 'crm-select2 huge'));
+    $this->add('select', 'advanced_components', ts('Advanced Components'), $this->getOptions("regComponents"), FALSE,
+        array('id' => 'advanced_components', 'multiple' => 'multiple', 'class' => 'crm-select2 huge'));
+    $this->add('select', 'excellent_components', ts('Excellent Components'), $this->getOptions("regComponents"), FALSE,
+        array('id' => 'excellent_components', 'multiple' => 'multiple', 'class' => 'crm-select2 huge'));
     $this->add('checkbox','elite_offered','Elite Offered',FALSE);
-    $this->add('advmultiselect','games_components','Games Components',$this->getOptions("gameComponents"),FALSE);  
-	
+    $this->add('select', 'games_components', ts('Games Components'), $this->getOptions("gameComponents"), FALSE,
+        array('id' => 'games_components', 'multiple' => 'multiple', 'class' => 'crm-select2 huge'));
+    
     $this->addButtons(array(
       array(
         'type' => 'done',
@@ -80,7 +84,7 @@ class CRM_TrialAdmin_Form_EditComponent extends CRM_Core_Form {
       var_error_log($values);
         
     if ($values["_qf_EditComponent_submit"] = "Submit") {
-		error_log("Executing a save/update of data");
+		error_log("Executing a save/update of data on ".print_r($values, TRUE));
 	  if ($this->_action == 2){
     	$values["id"] = $this->_id;
 		$result = civicrm_api3('TrialComponents', 'create', [
@@ -96,7 +100,7 @@ class CRM_TrialAdmin_Form_EditComponent extends CRM_Core_Form {
     'games_components' => $values['games_components'],
 		
 		]); 
-		var_error_log($result);
+		error_log("writing results: ".print_r($result), TRUE);
 	 } elseif ($this->_action == 1) {
     $result = civicrm_api3('TrialComponents', 'create', [
       'id' 	=> $values['id'],
@@ -110,7 +114,7 @@ class CRM_TrialAdmin_Form_EditComponent extends CRM_Core_Form {
       'elite_offered' => $values['elite_offered'],
       'games_components' => $values['games_components'],
     ]) ;
-		var_error_log($result);
+		error_log("writing results: ".print_r($result), TRUE);
 
    }
 }
