@@ -58,7 +58,7 @@ class CRM_TrialAdmin_Form_EditComponent extends CRM_Core_Form {
    $this->add('datepicker','trial_date', ts('Trial Date'), array('class' => 'some-css-class'), TRUE, array('time' => FALSE, 'date' => 'mm-dd-yy', 'minDate' => '2021-01-01') );
   
    //$this->add('date','Trial_Date',ts('Trial Date'),CRM_Core_SelectValues::date(NULL, 'Y M d',0,1) );
-    $this->addEntityRef('judge',ts('Assigned Judge'));
+    $this->addEntityRef('judge',ts('Assigned Judge'),['api' => ['params' => ['group' => 'Judges_4']]],);
     $this->add('select', 'started_components', ts('Started Components'), $this->getOptions("regComponents"), FALSE,
         array('id' => 'started_components', 'multiple' => 'multiple', 'class' => 'crm-select2 huge'));
     $this->add('select', 'advanced_components', ts('Advanced Components'), $this->getOptions("regComponents"), FALSE,

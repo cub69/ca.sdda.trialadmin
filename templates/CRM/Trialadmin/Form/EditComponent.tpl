@@ -18,7 +18,7 @@ CRM.$(function($) {
 {* FIELD EXAMPLE: OPTION 1 (AUTOMATIC LAYOUT) *}
 
 {foreach from=$elementNames item=elementName}
-  {if $elementName != 'id' && $elementName != 'Event ID'}
+  {if $elementName != 'id' && $elementName != 'event_id'}
     <div class="crm-section">
     <div class="label">{$form.$elementName.label}</div>
     <div class="content">{$form.$elementName.html}</div>
