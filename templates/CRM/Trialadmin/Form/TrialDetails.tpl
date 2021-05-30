@@ -12,6 +12,7 @@ CRM.$(function($) {
     .on('crmPopupFormSuccess.crmLivePage', active, CRM.refreshParent);
 });
 {/literal}</script>
+
 <div class="crm-submit-buttons">
 {include file="CRM/common/formButtons.tpl" location="top"}
 </div>
@@ -26,7 +27,7 @@ CRM.$(function($) {
       </div>
     {/if}
 {/foreach}
-
+<button onclick="self.location.href=('otherfile.php')">Approve Trial</button> <button onclick="self.location.href=('otherfile.php')">Submit PL</button> 
 <h3>Trial Components</h3>
 {literal}
 <script language="JavaScript" type="text/javascript">

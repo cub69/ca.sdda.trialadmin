@@ -24,4 +24,10 @@
     <title>EditComponent</title>
     <access_arguments>access CiviCRM</access_arguments>
   </item>
+  <item>
+    <path>civicrm/trialapplication</path>
+    <page_callback>CRM_Trialadmin_Form_TrialApplication</page_callback>
+    <title>TrialApplication</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
 </menu>
