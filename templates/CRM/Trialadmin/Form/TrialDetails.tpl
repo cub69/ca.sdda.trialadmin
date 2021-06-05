@@ -11,7 +11,8 @@ CRM.$(function($) {
     .on('click.crmLivePage', active, CRM.popup)
     .on('crmPopupFormSuccess.crmLivePage', active, CRM.refreshParent);
 });
-{/literal}</script>
+{/literal}
+</script>
 
 <div class="crm-submit-buttons">
 {include file="CRM/common/formButtons.tpl" location="top"}
@@ -50,7 +51,6 @@ function deleteComponent(id){
 {/literal}
 <table border='1' cellpadding='5' cellspacing='5'><tr class="crm-entity" id="TrialComponents" style='border-bottom: 1px solid black'><th>Trial Number</th><th>Trial Date</th><th>Judge</th><th>Started</th><th>Advanced</th><th>Excellent</th><th>Elite Offered</th><th>Games</th></tr>
 {crmAPI var='result' entity='TrialComponents' action='get' event_id = $form.event_id.value}
-
 {foreach from=$result.values item=component}
 <td>{$component.trial_number}</td>
 <td>{$component.trial_date}</td>

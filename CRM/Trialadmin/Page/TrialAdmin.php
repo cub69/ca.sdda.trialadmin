@@ -17,7 +17,7 @@ class CRM_Trialadmin_Page_TrialAdmin extends CRM_Core_Page {
     $this->assign('currentTime', date('Y-m-d H:i:s'));
     
     CRM_Core_Resources::singleton()->addSetting(array('trialEvent' => array('event' => strval($eventid))));
-
+ 
     $loader = new \Civi\Angular\AngularLoader();
     $loader->setModules(array('trialadmin'));
     $loader->setPageName('Administration');

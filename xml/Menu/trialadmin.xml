@@ -30,4 +30,10 @@
     <title>TrialApplication</title>
     <access_arguments>access CiviCRM</access_arguments>
   </item>
+  <item>
+    <path>civicrm/addcomponent</path>
+    <page_callback>CRM_Trialadmin_Form_AddComponent</page_callback>
+    <title>AddComponent</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
 </menu>

@@ -1,7 +1,7 @@
 (function(angular, $, _) {
 
   angular.module('trialadmin').config(function($routeProvider) {
-      $routeProvider.when('/about/me', {
+      $routeProvider.when('/trialadmin', {
         controller: 'TrialadminEditCtrl',
         controllerAs: '$ctrl',
         templateUrl: '~/trialadmin/EditCtrl.html',

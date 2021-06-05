@@ -129,8 +129,12 @@ class CRM_TrialAdmin_Form_EditComponent extends CRM_Core_Form {
         ]) ;
       }
     }
-
-    parent::postProcess();
+    if ($values["_qf_TrialDetails_submit"] == "next") {
+      $url = CRM_Utils_System::url( 'civicrm/trialapplication', "eventid=$event_id&reset=1&force=1&action=update" );
+    } else {
+      $url = CRM_Utils_System::url( 'civicrm/');
+    }
+    CRM_Core_Session::singleton()->pushUserContext($url);
   }
 
   public function getOptions($optionType) {

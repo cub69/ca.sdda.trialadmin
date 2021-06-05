@@ -64,7 +64,7 @@ class CRM_Trialadmin_Form_TrialDetails extends CRM_Core_Form {
 
     $this->addEntityRef('Requester', ts('Select Contact'));
     $this->add('text','Requester_email','Requester Email',TRUE);
-    
+     
     // add form elements
     $this->add('text','hosting_club','Hosting Club',TRUE);
     $this->add('text','Location_name','Location Name',TRUE);

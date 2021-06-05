@@ -19,5 +19,5 @@ return [
     'crmUtil',
     'ngRoute',
   ],
-//  'settings' => [ id ],
+  'settings' => [],
 ];

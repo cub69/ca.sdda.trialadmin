@@ -179,34 +179,23 @@ function trialadmin_civicrm_tabset($tabsetName, &$tabs, $context) {
  if ($tabsetName == 'civicrm/event/manage') {
    error_log(print_r($context, TRUE));
   if (!empty($context)) {
-    $eid = $context['event_id'];
-    //CRM_Core_Session::setStatus("in the Trial Admin", "EventID is ".$eid);
-    //error_log("I'm in the Trial Admin region Event #".$eid);
-    if ($eid) {
+      $eid = $context['event_id'];
+  //if ($eid) {
     //$url = CRM_Utils_System::url( 'civicrm/event/manage/TrialAdmin', "reset=1&force=1&id=$eid&snippet=5&angularDebug=1" );
     $url = CRM_Utils_System::url( 'civicrm/event/manage/TrialAdmin/trialdetails', "reset=1&force=1&eventid=$eid" );
-    //$url = CRM_Utils_System::url( 'civicrm/tdetails', "reset=1&force=1&eventid=$eid" );
+   //$url = CRM_Utils_System::url( 'civicrm/a/#/trialadmin/administration' );
   
-    error_log($url);
-    $tab['Administration'] = array(
-      'title' => "Administration",
-      'link' => $url,
-      'valid' => 1,
-      'active' => 1,
-      'current' => false,  
-    );
-
-  // Add our Angular module to the page
-//      Civi::service('angularjs.loader')->addModules(['trialadmin']);
+      error_log($url);
+//    Civi::service('angularjs.loader')->addModules(['trialadmin']);
       // Add the tab
-//      $tab['Administration'] = [
-//        'title' => "Administration",
-//        'templateurl' => '~/ang/trialadmin/details.aff.html',
-//        'valid' => 1,
-//        'active' => 1,
-//        'current' => false,
-//      ];
       
+      $tab['Administration'] = [
+        'title' => "Administration",
+        'link' => $url,
+        'valid' => 1,
+        'active' => 1,
+        'current' => false,
+      ];      
   }
   else {
     $tab['Administration'] = array(
@@ -222,6 +211,6 @@ function trialadmin_civicrm_tabset($tabsetName, &$tabs, $context) {
   );
 }
 }
-}
+
 
 
