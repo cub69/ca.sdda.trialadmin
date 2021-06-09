@@ -20,7 +20,15 @@
     <name>id</name>
     <autoincrement>true</autoincrement>
   </primaryKey>
-
+<field>
+    <name>approved</name>
+    <type>tinyint</type>
+    <required>true</required>
+    <comment>If Trial Approved</comment>
+    <html>
+      <type>checkbox</type>
+    </html>
+  </field>
   <field>
     <name>event_id</name>
     <type>int unsigned</type>

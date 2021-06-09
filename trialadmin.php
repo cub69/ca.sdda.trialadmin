@@ -5,6 +5,29 @@ require_once 'trialadmin.civix.php';
 use CRM_Trialadmin_ExtensionUtil as E;
 // phpcs:enable
 
+function trialadmin_civicrm_permission(&$permissions) {
+  $version = CRM_Utils_System::version();
+  if (version_compare($version, '4.6.1') >= 0) {
+    $permissions['access TrialAdmin'] = [
+        E::ts('Access TrialAdmin'),
+        E::ts('Grants the necessary API permissions for applying for and administering trial events'),
+      ];
+    $permissions['edit TrialAdmin'] = [
+        E::ts('TrialAdmin: edit TrialAdmin'),                     // label
+        E::ts('TrialAdmin: Create or edit various data tables and forms in TrialAdmin'),  // description
+      ];
+    $permissions['delete in TrialAdmin'] = [
+        E::ts('TrialAdmin: delete TrialAdmin'),                    // if no description, just give an array with the label
+      ];
+    
+  }
+  else {
+    $permissions += [
+      'access TrialAdmin' => E::ts('Access TrialAdmin'),
+    ];
+  }
+}
+
 /**
  * Implements hook_civicrm_config().
  *
@@ -112,9 +135,9 @@ function trialadmin_civicrm_caseTypes(&$caseTypes) {
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_angularModules
  */
-function trialadmin_civicrm_angularModules(&$angularModules) {
-  _trialadmin_civix_civicrm_angularModules($angularModules);
-}
+//function trialadmin_civicrm_angularModules(&$angularModules) {
+//  _trialadmin_civix_civicrm_angularModules($angularModules);
+//}
 
 /**
  * Implements hook_civicrm_alterSettingsFolders().
@@ -182,7 +205,7 @@ function trialadmin_civicrm_tabset($tabsetName, &$tabs, $context) {
       $eid = $context['event_id'];
   //if ($eid) {
     //$url = CRM_Utils_System::url( 'civicrm/event/manage/TrialAdmin', "reset=1&force=1&id=$eid&snippet=5&angularDebug=1" );
-    $url = CRM_Utils_System::url( 'civicrm/event/manage/TrialAdmin/trialdetails', "reset=1&force=1&eventid=$eid" );
+    $url = CRM_Utils_System::url( 'civicrm/event/manage/TrialAdmin/trialdetails', "reset=1&force=1&id=$eid" );
    //$url = CRM_Utils_System::url( 'civicrm/a/#/trialadmin/administration' );
   
       error_log($url);

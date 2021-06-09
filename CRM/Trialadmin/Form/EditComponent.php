@@ -95,10 +95,11 @@ class CRM_TrialAdmin_Form_EditComponent extends CRM_Core_Form {
     $advanced_components = '';
     $excellent_components = '';
     $games_components = '';
-    foreach ($values['started_components'] as $value) {$started_components .= $value.', '; }
-    foreach ($values['advanced_components'] as $value) {$advanced_components .= $value.', '; }
-    foreach ($values['excellent_components'] as $value) {$excellent_components .= $value.', '; }
-    foreach ($values['games_components'] as $value) {$games_components .= $value.', '; }
+    foreach ($values['started_components'] as $value) {$started_components .= $value.' '; }
+    foreach ($values['advanced_components'] as $value) {$advanced_components .= $value.' '; }
+    foreach ($values['excellent_components'] as $value) {$excellent_components .= $value.' '; }
+    foreach ($values['games_components'] as $value) {$games_components .= $value.' '; }
+    $id = $this->_id;
     if ($values["_qf_EditComponent_submit"] = "Submit") {
   	  if ($this->_action == 2){
       	$values["id"] = $this->_id;
@@ -109,7 +110,7 @@ class CRM_TrialAdmin_Form_EditComponent extends CRM_Core_Form {
 		      'trial_date' => $values['trial_date'],
           'judge' => $values['judge'],
           'started_components' => $started_components,
-          'advanced_components' => $advanced_components,
+          'advanced_components' => $advanced_components, 
           'excellent_components' => $excellent_components,
           'elite_offered' => $values['elite_offered'],
           'games_components' => $games_components,
@@ -129,11 +130,7 @@ class CRM_TrialAdmin_Form_EditComponent extends CRM_Core_Form {
         ]) ;
       }
     }
-    if ($values["_qf_TrialDetails_submit"] == "next") {
-      $url = CRM_Utils_System::url( 'civicrm/trialapplication', "eventid=$event_id&reset=1&force=1&action=update" );
-    } else {
-      $url = CRM_Utils_System::url( 'civicrm/');
-    }
+    $url = CRM_Utils_System::url( 'civicrm/event/manage/settings', "reset=1&force=1&action=update&id=$id" );
     CRM_Core_Session::singleton()->pushUserContext($url);
   }
 

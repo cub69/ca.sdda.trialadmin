@@ -18,17 +18,15 @@ CRM.$(function($) {
 {include file="CRM/common/formButtons.tpl" location="top"}
 </div>
 {* FIELD EXAMPLE: OPTION 1 (AUTOMATIC LAYOUT) *}
-
 {foreach from=$elementNames item=elementName}
-    {if $elementName != 'id' && $elementName != 'event_id'}
+{*    {if $elementName != 'id' && $elementName != 'event_id'} *}
       <div class="crm-section">
       <div class="label">{$form.$elementName.label}</div>
       <div class="content">{$form.$elementName.html}</div>
       <div class="clear"></div>
       </div>
-    {/if}
+{*    {/if}  *}
 {/foreach}
-<button onclick="self.location.href=('otherfile.php')">Approve Trial</button> <button onclick="self.location.href=('otherfile.php')">Submit PL</button> 
 <h3>Trial Components</h3>
 {literal}
 <script language="JavaScript" type="text/javascript">
@@ -52,9 +50,10 @@ function deleteComponent(id){
 <table border='1' cellpadding='5' cellspacing='5'><tr class="crm-entity" id="TrialComponents" style='border-bottom: 1px solid black'><th>Trial Number</th><th>Trial Date</th><th>Judge</th><th>Started</th><th>Advanced</th><th>Excellent</th><th>Elite Offered</th><th>Games</th></tr>
 {crmAPI var='result' entity='TrialComponents' action='get' event_id = $form.event_id.value}
 {foreach from=$result.values item=component}
-<td>{$component.trial_number}</td>
+{crmAPI var='judge' entity='Contact' action='getsingle' contact_id = $component.judge}
+<tr><td>{$component.trial_number}</td>
 <td>{$component.trial_date}</td>
-<td>{$component.judge}</td>
+<td>{$judge.display_name}</td>
 <td>{$component.started_components}</td>
 <td>{$component.advanced_components}</td>
 <td>{$component.excellent_components}</td>

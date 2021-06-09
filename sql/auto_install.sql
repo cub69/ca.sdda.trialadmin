@@ -50,6 +50,7 @@ CREATE TABLE `civicrm_trial_admin` (
 
 
      `id` int unsigned NOT NULL AUTO_INCREMENT  COMMENT 'Unique TrialAdmin ID',
+     `approved` tinyint NOT NULL   COMMENT 'If Trial Approved',
      `event_id` int unsigned    COMMENT 'FK to Event',
      `Requester` int unsigned    COMMENT 'FK to Contact',
      `hosting_club` text    COMMENT 'Club hosting trial',
