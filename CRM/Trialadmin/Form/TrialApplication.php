@@ -225,15 +225,14 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
         $params['from'] = 'Sporting Detection Dogs Association <norm@sportingdetectiondogs.ca>';
         $params['toName'] = $values['Requester_Name'].' '.$values['Requester_lastname'];
         $params['toEmail'] = $contact['email'];
-        $params['subject'] = 'Trial Approval';
+        $params['subject'] = 'Trial Application';
         $params['text'] = '';
         $params['html'] = $emailbody;
         CRM_Utils_Mail::send($params);
+        CRM_Utils_Mail::logger($contact['email'],$params,$emailbody);
         $params['toName'] = '';
         $params['toEmail'] = 'norm@sportingdetectiondogs.ca';
-        CRM_Utils_Mail::send($params);
-        $params['toName'] = '';
-        $params['toEmail'] = 'karin@sportingdetectiondogs.ca';
+        $params['cc'] = 'karin@sportingdetectiondogs.ca';
         CRM_Utils_Mail::send($params);
       
         CRM_Core_Session::singleton()->pushUserContext($url);
