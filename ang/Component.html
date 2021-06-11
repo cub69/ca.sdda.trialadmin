@@ -1,0 +1,68 @@
+<header ng-repeat-start="component in components">
+    Header {{ Trial Components }}
+  </header>
+  <div class="body">
+    <div crm-ui-field="{name: 'myAppl.component.date', title: ts('Date'),}">
+      <input crm-ui-datepicker="{time: false, date: 'dd-mm-yy'}" ng-model="$ctrl.myEvent.component.date"/>
+    </div>
+    <div crm-ui-field="{name: 'myAppl.component.judge', title: ts('Judge')}">
+      <input
+        name="myAppl.component.judge" crm-ui-id="myAppl.component.judge" 
+         crm-entityref="{entity: 'Contact', api: {params: {group: 'Judges_4', is_active: 1, options:{sort:'name'}}}, select: {allowClear: true, minimumInputLength: 0, placeholder: ts('Select Judge')}}"
+        ng-model="$ctrl.myEvent.component.judge"
+      />
+    </div>
+    <div crm-ui-field="{name: 'myAppl.component.started', title: ts('Started Components')}">
+      <select
+      crm-ui-select="{allowClear: true}"
+      ng-model="$ctrl.myEvent.component.started"
+      multiple="multiple"
+      class="big">
+      <option ng-repeat="option in $ctrl.regComponents" value="{{option.value}}">
+        {{option.label}}
+      </option>
+    </select>
+    </div>
+    <div crm-ui-field="{name: 'myAppl.component.advanced', title: ts('Advanced Components')}">
+      <select
+      crm-ui-select="{allowClear: true}"
+      ng-model="$ctrl.myEvent.component.advanced"
+      multiple="multiple"
+      class="big">
+      <option ng-repeat="option in $ctrl.regComponents" value="{{option.value}}">
+        {{option.label}}
+      </option>
+    </select>
+    </div>
+    <div crm-ui-field="{name: 'myAppl.component.excellent', title: ts('Excellent Components')}">
+      <select
+      crm-ui-select="{allowClear: true}"
+      ng-model="$ctrl.myEvent.component.Excellent"
+      multiple="multiple"
+      class="big">
+      <option ng-repeat="option in $ctrl.regComponents" value="{{option.value}}">
+        {{option.label}}
+      </option>
+    </select>
+    </div>
+    <div crm-ui-field="{name: 'myAppl.component.games', title: ts('Games Components')}">
+      <select
+      crm-ui-select="{allowClear: true}"
+      ng-model="$ctrl.myEvent.component.games"
+      multiple="multiple"
+      class="big">
+      <option ng-repeat="option in $ctrl.gameComponents" value="{{option.value}}">
+        {{option.label}}
+      </option>
+    </select>
+    </div>
+    <div>
+      <button ng-click="$ctrl.addComponent()">{{ts('Add')}}</button>
+    </div>
+
+  </div>
+  <footer ng-repeat-end>
+    Footer {{ Trial Components }}
+  </footer>
+  </div>
+</div>
