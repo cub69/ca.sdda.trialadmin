@@ -198,7 +198,6 @@ class CRM_Trialadmin_Form_TrialDetails extends CRM_Core_Form {
                 'role_id' => "Host",
               ]);
               array_push($partic, $values['trial_chairperson']);
-              error_log("Trial chair added");
           }
           if (!in_array($values['trial_secretary'], $partic )) {
               $result = civicrm_api3('Participant', 'create', [
@@ -207,15 +206,12 @@ class CRM_Trialadmin_Form_TrialDetails extends CRM_Core_Form {
                 'role_id' => "Trial Secretary",
               ]);
               array_push($partic, $values['trial_chairperson']);
-              error_log("Trial secretary added");
           }
           $comp1 = civicrm_api3('TrialComponents', 'get', ['sequential' => 1, 'event_id' => $values['event_id']]);
           $judges = $comp1['values'];
-          error_log(print_r($partic, TRUE));
           foreach ($judges as $key=>$value) {
             if (!in_array($value['judge'], $partic)) {
               array_push($partic,$value['judge']);
-              error_log("Judge added");
               $result = civicrm_api3('Participant', 'create', [
                 'event_id' => $values['event_id'],
                 'contact_id' => $value['judge'],
@@ -223,9 +219,35 @@ class CRM_Trialadmin_Form_TrialDetails extends CRM_Core_Form {
               ]);
             }
           }
-          error_log(print_r($partic,TRUE));
           //Set event values - public, and new look Trial description
-    
+          $comp1=$comp1['values'];
+          $date_ar = array();
+          foreach ($comp1 as $component) {
+            array_push($date_ar, $component['trial_date']);
+          }
+          error_log("dates: ".print_r($date_ar,TRUE));
+          error_log('Max: ' . max($date_ar));
+          error_log('Min: ' . min($date_ar));
+          $start_date = min($date_ar);
+          $finish_date = max($date_ar);
+          $trial_chair = civicrm_api3('Contact', 'getsingle', ['sequential' => 1,'id' => $values['trial_chairperson'],]);
+          $trial_secretary = civicrm_api3('Contact', 'getsingle', ['sequential' => 1,'id' => $values['trial_secretary'],]);
+          $template ->assign('trial_chairperson', $trial_chair);
+          $template ->assign('trial_secretary', $trial_secretary);
+
+          $durl = E::path('templates/CRM/Trialadmin/email/trialDescription.tpl');
+          $descbody = (CRM_Core_Smarty::singleton()->fetch($durl));
+          
+          $result = civicrm_api3('Event', 'create', array(
+            'id' => $values['event_id'],
+            'is_public' => "1",
+            'start_date' => $start_date,
+            'end_date' => $finish_date,
+            'description' => $descbody,
+          ));
+
+
+
         } else {
           error_log("Trial UNapproved or cancelled");
         }

@@ -12,7 +12,7 @@ class CRM_TrialAdmin_Form_EditComponent extends CRM_Core_Form {
   public $_id;
   public $_action;
   //public $_event_id;
-
+  
   public function preProcess() {
 	  // do prep work  
     $this->preventAjaxSubmit();
@@ -41,10 +41,17 @@ class CRM_TrialAdmin_Form_EditComponent extends CRM_Core_Form {
         ));
         //error_log('Started components: '. print_r($component['started_components'], TRUE));
     } elseif ($this->_action == 1) {
-          error_log("processing as new");    
+          error_log("processing as new");  
           $this->_eventid = CRM_Utils_Request::retrieve('eventid', 'Positive', $this, TRUE);
+          $comp = civicrm_api3('TrialComponents', 'get', []);
+          $comp = $comp['values'];
+          $tns = array();
+          foreach($comp as $key=>$value) {array_push($tns, $value['trial_number']); };
+          $newTrialNum = max($tns)+1;
+          error_log(print_r($comp,TRUE));
           $this->setDefaults(array( 
             'event_id' => $this->_eventid,
+            'trial_number' => $newTrialNum,
           ));
           error_log("processing as new completed setting defaults");
       }
@@ -130,7 +137,8 @@ class CRM_TrialAdmin_Form_EditComponent extends CRM_Core_Form {
         ]) ;
       }
     }
-    $url = CRM_Utils_System::url( 'civicrm/event/manage/settings', "reset=1&force=1&action=update&id=$id" );
+    $eventid=$values['event_id'];
+    $url = CRM_Utils_System::url( 'civicrm/event/manage/settings', "reset=1&force=1&action=update&id=$eventid" );
     CRM_Core_Session::singleton()->pushUserContext($url);
   }
 
@@ -154,6 +162,7 @@ class CRM_TrialAdmin_Form_EditComponent extends CRM_Core_Form {
  		return $options;	
     }
   }
+    
   /**
    * Get the fields/elements defined in this form.
    *
