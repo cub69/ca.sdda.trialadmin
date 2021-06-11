@@ -40,4 +40,3 @@ Once installed, it creates 2 new tables/entities in the database civicrm_trialad
 
 ## Known Issues
 
-Initial commit has issues with edit/add of individual components at the bottom of the Administration page.
