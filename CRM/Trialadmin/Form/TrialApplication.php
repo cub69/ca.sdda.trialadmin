@@ -65,8 +65,6 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
       error_log(print_r($current_user,TRUE));
       $cuser = civicrm_api3('Contact', 'getsingle', ['email' => $current_user->user_email,]);
       error_log(print_r($cuser,TRUE));
-
-      
       $this->setDefaults(array( 
         'Requester' => $cuser['contact_id'],
         'Requester_email' => $current_user->user_email,
