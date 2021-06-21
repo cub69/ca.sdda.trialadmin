@@ -15,6 +15,7 @@ class CRM_Trialadmin_Form_TrialDetails extends CRM_Core_Form {
     CRM_Utils_System::setTitle(E::ts('Trial Details'));
     $this->_action = CRM_Utils_Request::retrieve('action', 'String', $this);	
     $this->assign('url',$this->_url);
+    $action=$this->_action;
 
 //    error_log(print_r($this, TRUE));
     if ($this->_name == "TrialDetails") {
@@ -67,8 +68,9 @@ class CRM_Trialadmin_Form_TrialDetails extends CRM_Core_Form {
     $this->add('text','event_id','event_id',TRUE);
 
     // add action buttons for automation
-    $this->add('advcheckbox', 'approved', 'Approve Trial',);
-    
+    $this->add('advcheckbox', 'approved', 'Approve Trial/Send Email',);
+    $this->add('advcheckbox', 'approved2', 'Update Event Information',);
+    //$this->add('button', 'approved', );
     $this->addEntityRef('Requester', ts('Select Contact'));
     $this->add('text','Requester_email','Requester Email',TRUE);
     $this->add('text','hosting_club','Hosting Club',TRUE);
@@ -112,12 +114,13 @@ class CRM_Trialadmin_Form_TrialDetails extends CRM_Core_Form {
   }
 
   public function postProcess() {
-    
+    //error_log("Reload Action this array: ".print_r($this,TRUE));    
     $values = $this->exportValues();
     $$values = $this->exportValues();
-    
      // add some error control
-    if ($values["_qf_TrialDetails_submit"] = "done") {
+     error_log(print_r($values,TRUE));
+
+    if ($values["_qf_TrialDetails_done"] == "1") {
 		  error_log("Executing a save/update of data");
       error_log("Current this array: ".print_r($values, TRUE));
       
@@ -151,8 +154,92 @@ class CRM_Trialadmin_Form_TrialDetails extends CRM_Core_Form {
         error_log("Returned value is: ".print_r($result,TRUE));
 		  //error_log("Previous status was: ".$this->_approved_status);
       //error_log("Current status is: ".$values['approved']);
+      if ($values['approved2'] == '1'){
+        error_log("Trial Approved but no email!");
+        //prepare email to requester
+        // get contact details
+        $template = CRM_Core_Smarty::singleton();
+        $contact = civicrm_api3('Contact', 'getsingle', ['sequential' => 1,'id' => $values['Requester'],]);
+        $province = civicrm_api3('state_province', 'getsingle', ['id'=>$values['Location_province']]);
+        $template ->assign('province', $province);
+        error_log(print_r($province, TRUE));
+        foreach ($contact as $key => $value) {
+          $template->assign($key, $value);
+        }         
+        foreach ($values as $key => $value) {
+          $template->assign($key, $value);
+        }
+        //Register host, trial secretary and judge(s) for the event
+        $partic= array();
+        $curr = civicrm_api3('Participant', 'get', [
+          'event_id' => $values['event_id'],
+        ]);
+        $curr = $curr['values'];
+        foreach($curr as $key=>$value) {
+          if (!in_array($value['contact_id'], $partic)) {
+            array_push($partic, $value['contact_id']);
+          }
+        };
+        error_log("loaded from database ".print_r("$partic",TRUE));
+        if (!in_array($values['trial_chairperson'], $partic )) {
+            $result = civicrm_api3('Participant', 'create', [
+              'event_id' => $values['event_id'],
+              'contact_id' => $values['trial_chairperson'],
+              'role_id' => "Host",
+            ]);
+            array_push($partic, $values['trial_chairperson']);
+        }
+        if (!in_array($values['trial_secretary'], $partic )) {
+            $result = civicrm_api3('Participant', 'create', [
+              'event_id' => $values['event_id'],
+              'contact_id' => $values['trial_secretary'],
+              'role_id' => "Trial Secretary",
+            ]);
+            array_push($partic, $values['trial_chairperson']);
+        }
+        $comp1 = civicrm_api3('TrialComponents', 'get', ['sequential' => 1, 'event_id' => $values['event_id']]);
+        $judges = $comp1['values'];
+        foreach ($judges as $key=>$value) {
+          if (!in_array($value['judge'], $partic)) {
+            array_push($partic,$value['judge']);
+            $result = civicrm_api3('Participant', 'create', [
+              'event_id' => $values['event_id'],
+              'contact_id' => $value['judge'],
+              'role_id' => "Judge",
+            ]);
+          }
+        }
+        //Set event values - public, and new look Trial description
+        $comp1=$comp1['values'];
+        $date_ar = array();
+        foreach ($comp1 as $component) {
+          array_push($date_ar, $component['trial_date']);
+        }
+        error_log("dates: ".print_r($date_ar,TRUE));
+        error_log('Max: ' . max($date_ar));
+        error_log('Min: ' . min($date_ar));
+        $start_date = min($date_ar);
+        $finish_date = max($date_ar);
+        $trial_chair = civicrm_api3('Contact', 'getsingle', ['sequential' => 1,'id' => $values['trial_chairperson'],]);
+        $trial_secretary = civicrm_api3('Contact', 'getsingle', ['sequential' => 1,'id' => $values['trial_secretary'],]);
+        $template ->assign('trial_chairperson', $trial_chair);
+        $template ->assign('trial_secretary', $trial_secretary);
+
+        $durl = E::path('templates/CRM/Trialadmin/email/trialDescription.tpl');
+        $descbody = (CRM_Core_Smarty::singleton()->fetch($durl));
+        
+        $result = civicrm_api3('Event', 'create', array(
+          'id' => $values['event_id'],
+          'is_public' => "1",
+          'start_date' => $start_date,
+          'end_date' => $finish_date,
+          'description' => $descbody,
+        ));
+
+      }
       if ($values['approved'] != $this->_approved_status) {
         error_log("Approval status has changed");
+        
         if ($values['approved'] == '1') {
           error_log("Trial Approved!");
           //prepare email to requester
