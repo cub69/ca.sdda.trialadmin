@@ -43,12 +43,10 @@ class CRM_TrialAdmin_Form_AddComponent extends CRM_Core_Form {
     } elseif ($this->_action == 1) {
           error_log("processing as new");    
           $this->_eventid = CRM_Utils_Request::retrieve('eventid', 'Positive', $this, TRUE);
-          $comp = civicrm_api3('TrialComponents', 'get', []);
-          $comp = $comp['values'];
-          $tns = array();
-          foreach($comp as $key=>$value) {array_push($tns, $value['trial_number']); };
-          $newTrialNum = max($tns)+1;
-          error_log(print_r($comp,TRUE));
+          global $wpdb;
+          $query = "SELECT max( `trial_number` ) as last_trial_number FROM `civicrm_trial_components`";
+	        $comp1 = $wpdb->get_results( $query );
+          $newTrialNum = $comp1[0]->last_trial_number+1;
           $this->setDefaults(array( 
             'event_id' => $this->_eventid,
             'trial_number' => $newTrialNum,

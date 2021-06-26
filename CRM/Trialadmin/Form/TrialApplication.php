@@ -281,8 +281,8 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
       'event_full_text' => $my_event_summary,
       'title' => $my_event_summary,
       'description' => $my_event_summary,
-      'start_date' => date("m/d/Y"),
-      'end_date' => date("m/d/Y"),
+      'start_date' => date("12/31/2022"),
+      'end_date' => date("12/31/2022"),
     ));
     error_log('Creating the trialAdmin Event: '.print_r($result, TRUE));
     return($result['id']);

@@ -27,14 +27,16 @@ class CRM_Trialadmin_Form_TrialDetails extends CRM_Core_Form {
       $eventid = $event["id"];
       $components = civicrm_api3('TrialComponents', 'get', ['event_id' => $eventid]);
       //$id = "355";
-      error_log("This is the event:".print_r($event, TRUE));
-      error_log("Building the form...");
+      error_log(print_r($event,TRUE));
+      error_log("This is the event:".print_r($id, TRUE));
+      error_log("Building the form for...".print_r($eventid,TRUE));
       
       $details = $event['values'][$eventid];
       error_log("Details: ".print_r($details,TRUE));
       $this->_approved_status = $details['approved'];
       $this->setDefaults(array( 
           'id' => $details['id'],
+          'event_id' => $id,
           'approved' => $details['approved'],
           'event_id' => $details['event_id'],
           'hosting_club' => $details['hosting_club'],
@@ -84,7 +86,7 @@ class CRM_Trialadmin_Form_TrialDetails extends CRM_Core_Form {
     $this->add('text','Street_address','Address',TRUE);
     $this->add('text','Location_city','City',TRUE);
     $this->addEntityRef('Location_province', ts('Select Province'),
-      ['entity' => 'state_province',]);
+    ['entity' => 'state_province','api' => ['params' => ['country_id' => 1039]]]);
 //    $this->addEntityRef('Location_country', ts('Select country'),
 //      ['entity' => 'country',]);
     $this->add('textarea', 'venue_description', 'Location Description',TRUE);  
@@ -117,16 +119,18 @@ class CRM_Trialadmin_Form_TrialDetails extends CRM_Core_Form {
     //error_log("Reload Action this array: ".print_r($this,TRUE));    
     $values = $this->exportValues();
     $$values = $this->exportValues();
+    $eventid = $this->_eID;
+
      // add some error control
      error_log(print_r($values,TRUE));
 
     if ($values["_qf_TrialDetails_done"] == "1") {
-		  error_log("Executing a save/update of data");
       error_log("Current this array: ".print_r($values, TRUE));
-      
+      if($values['id'] != 0) {
+        error_log("Executing an update of data");
 		    $result = civicrm_api3('TrialAdmin', 'create', [
         'id' => $values['id'],
-        'event_id' => $values['event_id'], 
+        'event_id' => $eventid, 
         'approved' => $values['approved'],
         'hosting_club' => $values['hosting_club'],
         'Requester' => $values['Requester'],
@@ -152,6 +156,38 @@ class CRM_Trialadmin_Form_TrialDetails extends CRM_Core_Form {
         'confirm_judge_contacted' => $values['confirm_judge_contacted'],
 		    ]); 
         error_log("Returned value is: ".print_r($result,TRUE));
+        } else {
+          // Create a new entry
+          error_log("Executing a new create of data");
+          $result = civicrm_api3('TrialAdmin', 'create', [
+            'event_id' => $eventid, 
+            'approved' => $values['approved'],
+            'hosting_club' => $values['hosting_club'],
+            'Requester' => $values['Requester'],
+            'Requester_RP' => $values['Requester_RP'],
+            'Requester_Name' => $values['Requester_Name'],
+            'Requester_lastname' => $values['Requester_lastname'],
+            'Requester_email' => $values['Requester_email'],
+            'Location_name' => $values['Location_name'],
+            'Street_address' => $values['Street_address'],
+            'Location_city' => $values['Location_city'],
+            'Location_province' => $values['Location_province'],
+            'Location_country' => "Canada",
+            'trial_chairperson' => $values['trial_chairperson'],
+            'trial_secretary' => $values['trial_secretary'],
+            'venue_description' => $values['venue_description'],
+            'space_for_containers' => $values['space_for_containers'],
+            'space_for_interior' => $values['space_for_interior'],
+            'space_for_exterior' => $values['space_for_exterior'],
+            'staging_and_crating' => $values['staging_and_crating'],
+            'space_for_secretary' => $values['space_for_secretary'],
+            'space_for_judge' => $values['space_for_judge'],
+            'confirm_square_footage' => $values['confirm_square_footage'],
+            'confirm_judge_contacted' => $values['confirm_judge_contacted'],
+            ]); 
+            error_log("Returned value is: ".print_r($result,TRUE));
+    
+        }
 		  //error_log("Previous status was: ".$this->_approved_status);
       //error_log("Current status is: ".$values['approved']);
       if ($values['approved2'] == '1'){
@@ -339,7 +375,6 @@ class CRM_Trialadmin_Form_TrialDetails extends CRM_Core_Form {
           error_log("Trial UNapproved or cancelled");
         }
       }
-      $eventid = $values['event_id'];
       $url = CRM_Utils_System::url( 'civicrm/event/manage/settings', "reset=1&force=1&action=update&id=$eventid" );
       CRM_Core_Session::singleton()->pushUserContext($url);
     }
