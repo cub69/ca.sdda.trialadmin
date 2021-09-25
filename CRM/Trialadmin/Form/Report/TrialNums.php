@@ -9,117 +9,48 @@ class CRM_Trialadmin_Form_Report_TrialNums extends CRM_Report_Form {
 
   protected $_summary = NULL;
 
-  protected $_customGroupExtends = array('Membership');
   protected $_customGroupGroupBy = FALSE; function __construct() {
     $this->_columns = array(
-      'civicrm_contact' => array(
-        'dao' => 'CRM_Contact_DAO_Contact',
+      'civicrm_event' => array(
+        'dao' => 'CRM_Event_DAO_Event',
         'fields' => array(
-          'sort_name' => array(
-            'title' => E::ts('Contact Name'),
-            'required' => TRUE,
-            'default' => TRUE,
-            'no_repeat' => TRUE,
+          'title' => array(
+            'title' => E::ts('Event Title'),
           ),
-          'id' => array(
-            'no_display' => TRUE,
-            'required' => TRUE,
+          'start_date' => array(
+            'title' => E::ts('Start Date'),
           ),
-          'first_name' => array(
-            'title' => E::ts('First Name'),
-            'no_repeat' => TRUE,
-          ),
-          'id' => array(
-            'no_display' => TRUE,
-            'required' => TRUE,
-          ),
-          'last_name' => array(
-            'title' => E::ts('Last Name'),
-            'no_repeat' => TRUE,
-          ),
-          'id' => array(
-            'no_display' => TRUE,
-            'required' => TRUE,
+          'end_date' => array(
+            'title' => E::ts('End Date'),
           ),
         ),
-        'filters' => array(
-          'sort_name' => array(
-            'title' => E::ts('Contact Name'),
-            'operator' => 'like',
-          ),
-          'id' => array(
-            'no_display' => TRUE,
-          ),
-        ),
-        'grouping' => 'contact-fields',
       ),
-      'civicrm_membership' => array(
-        'dao' => 'CRM_Member_DAO_Membership',
+      'civicrm_trial_admin' => array(
+        'dao' => 'CRM_Trialadmin_DAO_TrialAdmin',
         'fields' => array(
-          'membership_type_id' => array(
-            'title' => 'Membership Type',
-            'required' => TRUE,
-            'no_repeat' => TRUE,
+          'Requester_RP' => array(
+            'title' => 'Requester',
           ),
-          'join_date' => array(
-            'title' => E::ts('Join Date'),
+          'Requester_email' => array(
+            'title' => 'Email Address',
+          ),
+          'hosting_club' => array(
+            'title' => E::ts('Hosting Club'),
+          ),
+        ),
+      ),
+      'civicrm_trial_components' => array(
+        'dao' => 'CRM_Trialadmin_DAO_TrialComponents',
+        'fields' => array(
+          'trial_number' => array(
+            'title' => E::ts('Trial Number'),
             'default' => TRUE,
           ),
-          'source' => array('title' => 'Source'),
-        ),
-        'filters' => array(
-          'join_date' => array(
-            'operatorType' => CRM_Report_Form::OP_DATE,
-          ),
-          'owner_membership_id' => array(
-            'title' => E::ts('Membership Owner ID'),
-            'operatorType' => CRM_Report_Form::OP_INT,
-          ),
-          'tid' => array(
-            'name' => 'membership_type_id',
-            'title' => E::ts('Membership Types'),
-            'type' => CRM_Utils_Type::T_INT,
-            'operatorType' => CRM_Report_Form::OP_MULTISELECT,
-            'options' => CRM_Member_PseudoConstant::membershipType(),
-          ),
-        ),
-        'grouping' => 'member-fields',
-      ),
-      'civicrm_membership_status' => array(
-        'dao' => 'CRM_Member_DAO_MembershipStatus',
-        'alias' => 'mem_status',
-        'fields' => array(
-          'name' => array(
-            'title' => E::ts('Status'),
+          'trial_date' => array(
+            'title' => E::ts('Trial Date'),
             'default' => TRUE,
           ),
         ),
-        'filters' => array(
-          'sid' => array(
-            'name' => 'id',
-            'title' => E::ts('Status'),
-            'type' => CRM_Utils_Type::T_INT,
-            'operatorType' => CRM_Report_Form::OP_MULTISELECT,
-            'options' => CRM_Member_PseudoConstant::membershipStatus(NULL, NULL, 'label'),
-          ),
-        ),
-        'grouping' => 'member-fields',
-      ),
-      'civicrm_address' => array(
-        'dao' => 'CRM_Core_DAO_Address',
-        'fields' => array(
-          'street_address' => NULL,
-          'city' => NULL,
-          'postal_code' => NULL,
-          'state_province_id' => array('title' => E::ts('State/Province')),
-          'country_id' => array('title' => E::ts('Country')),
-        ),
-        'grouping' => 'contact-fields',
-      ),
-      'civicrm_email' => array(
-        'dao' => 'CRM_Core_DAO_Email',
-        'fields' => array('email' => NULL),
-        'grouping' => 'contact-fields',
       ),
     );
     $this->_groupFilter = TRUE;
@@ -128,34 +59,34 @@ class CRM_Trialadmin_Form_Report_TrialNums extends CRM_Report_Form {
   }
 
   function preProcess() {
-    $this->assign('reportTitle', E::ts('Trial Numbers Report'));
+    $this->assign('reportTitle', E::ts('Membership Detail Report'));
     parent::preProcess();
   }
-
+// Original SQL to get the CSV files
+//  select SQL_CALC_FOUND_ROWS event.title_en_CA, event.start_date, event.end_date, admin.Requester, admin.hosting_club, components.trial_number, components.trial_date
+//  FROM civicrm_event event
+//      LEFT JOIN civicrm_trial_admin admin ON event.id = admin.event_id
+//      LEFT JOIN civicrm_trial_components components ON event.id = components.event_id
+//  WHERE components.trial_number IS NOT null  
+//  ORDER BY `components`.`trial_number` ASC
+  
   function from() {
-    //select SQL_CALC_FOUND_ROWS event.title_en_CA, event.start_date, event.end_date, admin.Requester, admin.hosting_club, components.trial_number, components.trial_date
-    //FROM civicrm_event event
-    //    LEFT JOIN civicrm_trial_admin admin ON event.id = admin.event_id
-    //    LEFT JOIN civicrm_trial_components components ON event.id = components.event_id
-    //WHERE components.trial_number IS NOT null  
-    //ORDER BY `components`.`trial_number` ASC
-    //INTO OUTFILE '/home/customer/www/sportingdetectiondogs.ca/public_html/wp-content/uploads/civicrm/template_c/trialnumbers.csv';
-    
-    
     $this->_from = NULL;
 
     $this->_from = "
-         FROM  civicrm_contact {$this->_aliases['civicrm_contact']} {$this->_aclFrom}
-               INNER JOIN civicrm_membership {$this->_aliases['civicrm_membership']}
-                          ON {$this->_aliases['civicrm_contact']}.id =
-                             {$this->_aliases['civicrm_membership']}.contact_id AND {$this->_aliases['civicrm_membership']}.is_test = 0
-               LEFT  JOIN civicrm_membership_status {$this->_aliases['civicrm_membership_status']}
-                          ON {$this->_aliases['civicrm_membership_status']}.id =
-                             {$this->_aliases['civicrm_membership']}.status_id ";
+         FROM  civicrm_event {$this->_aliases['civicrm_event']} {$this->_aclFrom}
+               LEFT JOIN civicrm_trial_admin {$this->_aliases['civicrm_trial_admin']}
+                          ON {$this->_aliases['civicrm_event']}.id =
+                             {$this->_aliases['civicrm_trial_admin']}.event_id
+               LEFT  JOIN civicrm_trial_components {$this->_aliases['civicrm_trial_components']}
+                          ON {$this->_aliases['civicrm_event']}.id =
+                             {$this->_aliases['civicrm_trial_components']}.event_id ";
 
 
-    $this->joinAddressFromContact();
-    $this->joinEmailFromContact();
+    
+  }
+  function where() { 
+    $this->_where = "WHERE {$this->_aliases['civicrm_trial_components']}.trial_number IS NOT null "; 
   }
 
   /**
@@ -211,40 +142,6 @@ class CRM_Trialadmin_Form_Report_TrialNums extends CRM_Report_Form {
             $checkList[$colName][] = $colVal;
           }
         }
-      }
-
-      if (array_key_exists('civicrm_membership_membership_type_id', $row)) {
-        if ($value = $row['civicrm_membership_membership_type_id']) {
-          $rows[$rowNum]['civicrm_membership_membership_type_id'] = CRM_Member_PseudoConstant::membershipType($value, FALSE);
-        }
-        $entryFound = TRUE;
-      }
-
-      if (array_key_exists('civicrm_address_state_province_id', $row)) {
-        if ($value = $row['civicrm_address_state_province_id']) {
-          $rows[$rowNum]['civicrm_address_state_province_id'] = CRM_Core_PseudoConstant::stateProvince($value, FALSE);
-        }
-        $entryFound = TRUE;
-      }
-
-      if (array_key_exists('civicrm_address_country_id', $row)) {
-        if ($value = $row['civicrm_address_country_id']) {
-          $rows[$rowNum]['civicrm_address_country_id'] = CRM_Core_PseudoConstant::country($value, FALSE);
-        }
-        $entryFound = TRUE;
-      }
-
-      if (array_key_exists('civicrm_contact_sort_name', $row) &&
-        $rows[$rowNum]['civicrm_contact_sort_name'] &&
-        array_key_exists('civicrm_contact_id', $row)
-      ) {
-        $url = CRM_Utils_System::url("civicrm/contact/view",
-          'reset=1&cid=' . $row['civicrm_contact_id'],
-          $this->_absoluteUrl
-        );
-        $rows[$rowNum]['civicrm_contact_sort_name_link'] = $url;
-        $rows[$rowNum]['civicrm_contact_sort_name_hover'] = E::ts("View Contact Summary for this Contact.");
-        $entryFound = TRUE;
       }
 
       if (!$entryFound) {
