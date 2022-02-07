@@ -33,13 +33,17 @@ CRM.$(function($) {
       <p><strong>Welcome to the new Trial Application process!</strong></p>
       
       <p><strong>Please read these instructions completely before continuing.</strong><br>
+      Please review the "Hosting a Trial" page for valuable information before you apply.<br>
       1. Complete the information on the screen about you, the location where you intend on holding the trial, and who is running it.<br>
       2. When you have completed the items on this screen, click on the <strong>Next Step</strong> button.<br>
       3. Some processing will then happen and the screen will refresh.  At the bottom of the form there is now a new button called <strong>Add Component</strong><br>
       4. Click Add Component and tell us about each day you intend on having a trial - date, judge, and component.<br>
          For a multi day or multi judge trial, you would add a new component for each.<br>
       5. When completed, click on the \"Submit\" button to finish up.<br>
-      6. Wait for the SDDA To get back to you on your approvals</p>
+      6. Submit payment either through email transfer to stacey@sportingdetectiondogs.ca or via the store at https://www.sportingdetectiondogs.ca/product/trial-application-fee-for-trial-hosts/<br>
+         Please remember the fee is the number of trial days x $50.<br>
+         An SDDA trial is defined as a single offering of any Level within a 12-hour period and will be assigned a unique trial number.<br>
+      7. Wait for the SDDA To get back to you on your approvals</p>
     </div>
 
 <div class="crm-submit-buttons">
