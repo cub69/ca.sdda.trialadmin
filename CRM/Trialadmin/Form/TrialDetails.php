@@ -72,6 +72,7 @@ class CRM_Trialadmin_Form_TrialDetails extends CRM_Core_Form {
     // add action buttons for automation
     $this->add('advcheckbox', 'approved', 'Approve Trial/Send Email',);
     $this->add('advcheckbox', 'approved2', 'Update Event Information',);
+    $this->add('advcheckbox', 'submitMailing', 'Mail PL',);
     //$this->add('button', 'approved', );
     $this->addEntityRef('Requester', ts('Select Contact'));
     $this->add('text','Requester_email','Requester Email',TRUE);
@@ -190,6 +191,7 @@ class CRM_Trialadmin_Form_TrialDetails extends CRM_Core_Form {
         }
 		  //error_log("Previous status was: ".$this->_approved_status);
       //error_log("Current status is: ".$values['approved']);
+      
       if ($values['approved2'] == '1'){
         error_log("Trial Approved but no email!");
         //prepare email to requester
@@ -375,6 +377,94 @@ class CRM_Trialadmin_Form_TrialDetails extends CRM_Core_Form {
           error_log("Trial UNapproved or cancelled");
         }
       }
+      if ($values['submitMailing'] == '1') {
+        error_log("Submit mailing for distribution");
+
+        $group_id = array();
+        $params = array();
+        #$group_id="13";
+        $group_id[0]="1";
+        $template = CRM_Core_Smarty::singleton();
+#        $contact = civicrm_api3('Contact', 'getsingle', ['sequential' => 1,'id' => $values['Requester'],]);
+        $province = civicrm_api3('state_province', 'getsingle', ['id'=>$values['Location_province']]);
+        $template ->assign('province', $province);
+       error_log(print_r($values, TRUE));
+        foreach ($values as $key => $value) {
+          $template->assign($key, $value);
+        }
+        $turl = E::path('templates/CRM/Trialadmin/email/trialDistributePL.tpl');
+ #       $emailbody = (CRM_Core_Smarty::singleton()->fetch($turl));
+        $result = civicrm_api3('MessageTemplate', 'getsingle', array('id' => 68,));
+        $result['msg_html'] = str_replace("{custom.host}",$values['hosting_club'],$result['msg_html']);
+        $result['msg_html'] = str_replace("{custom.city}",$values['Location_city'],$result['msg_html']);
+        $result['msg_html'] = str_replace("{custom.province}",$province['abbreviation'],$result['msg_html']);
+        $event = civicrm_api3('Event', 'getsingle', array('id' => $eventid));
+        $result['msg_html'] = str_replace("{custom.trial_start}",$event['start_date'],$result['msg_html']);
+        $result['msg_html'] = str_replace(" 00:00:00",'',$result['msg_html']);
+        $result['msg_html'] = str_replace("{custom.trial_end}",$event['end_date'],$result['msg_html']);
+        $result['msg_html'] = str_replace("{custom.open_RP}",$event['custom_114'],$result['msg_html']);
+        $result['msg_html'] = str_replace("{custom.open_general}",$event['custom_61'],$result['msg_html']);
+        $result['msg_html'] = str_replace("{custom.PLLink}",$event['custom_115'],$result['msg_html']);
+        $result['msg_html'] = str_replace(" 00:00:00",'',$result['msg_html']);
+        error_log("Event details: ".print_r($event,TRUE));
+        $params = [
+          'sequential'         => 1,
+          'created_id'         => $contact_id, 
+          'created_date'       => date('Y-m-d H:i:s'),
+          'scheduled_id'       => $contact_id,
+          'scheduled_date'     => date('Y-m-d'),
+          'approver_id'        => $contact_id,
+          'approval_date'      => date('Y-m-d H:i:s'),
+          'approval_status_id' => 1,
+          'msg_template_id'    => 68,
+          'subject'            => 'Sanctioned SDDA Trial Announcement - '.$values['Location_city'].', '.$province['name'],
+          'name'               => 'SDDA Trial Announcement for '.$eventid,
+
+          'body_html' => $result['msg_html'].' '.$event['description'],
+          'body_text' => '',
+          'groups'             => [
+            'include' => [
+              '0' => 13,
+            ],
+            'exclude' => [
+            ],
+          ],
+          'mailings'           => array(
+            'include' => array(),
+            'exclude' => array(),
+          ),
+          #'from_name'          => "Test Sender",
+          #'from_email'         => "test_sender@test_sender.com",
+          #'replyto_email'      => "test_sender@test_sender.com",
+          #'reply_id'           => 8,  
+          'unsubscribe_id'     => 5,  
+          'optout_id'          => 7,  
+          'resubscribe_id'     => 6,  
+          'footer_id'          => 2,  
+          'header_id'          => 1,  
+          'open_tracking'      => 1,
+        ];    
+     #  error_log(print_r($params,TRUE));
+  #      try{
+          $result = civicrm_api3('Mailing', 'create', $params);
+     #     error_log("Results from Mailing API CALL: ".print_r($result,TRUE));
+  #      }
+  #      catch (CiviCRM_API3_Exception $e) {
+  #        // Handle error here.
+  #        $errorMessage = $e->getMessage();
+  #        $errorCode = $e->getErrorCode();
+  #        $errorData = $e->getExtraParams();
+  #        error_log("Error encountered! ".$error_Message." ".$errorCode." ".$errorData);
+
+  #        return [
+  #          'is_error' => 1,
+  #          'error_message' => $errorMessage,
+  #          'error_code' => $errorCode,
+  #          'error_data' => $errorData,
+  #        ];
+  #      }
+       
+      }
       $url = CRM_Utils_System::url( 'civicrm/event/manage/settings', "reset=1&force=1&action=update&id=$eventid" );
       CRM_Core_Session::singleton()->pushUserContext($url);
     }
@@ -400,6 +490,5 @@ class CRM_Trialadmin_Form_TrialDetails extends CRM_Core_Form {
     }
     return $elementNames;
   }
-
 
 }

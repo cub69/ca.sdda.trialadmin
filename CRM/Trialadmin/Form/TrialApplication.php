@@ -63,7 +63,21 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
       // this is a new trial application!
       global $current_user;
       error_log(print_r($current_user,TRUE));
-      $cuser = civicrm_api3('Contact', 'getsingle', ['email' => $current_user->user_email,]);
+      try {
+      $cuser = civicrm_api3('Contact', 'getsingle', ['email' => $current_user->user_email,'display_name' => $current_users->display_name,]);
+      }
+      catch (CiviCRM_API3_Exception $e) {
+        //error handler!
+        $errorMessage = "Sorry, something went wrong! "+$e->getMessage();
+        $errorCode = $e->getErrorCode();
+        $errorData = $e->getExtraParams();
+        return [
+          'is_error' => 1,
+          'error_message' => $errorMessage,
+          'error_code' => $errorCode,
+          'error_data' => $errorData,
+        ];
+      }
       error_log(print_r($cuser,TRUE));
       $this->setDefaults(array( 
         'Requester' => $cuser['contact_id'],
