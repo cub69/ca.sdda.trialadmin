@@ -404,7 +404,16 @@ class CRM_Trialadmin_Form_TrialDetails extends CRM_Core_Form {
         $result['msg_html'] = str_replace("{custom.trial_end}",$event['end_date'],$result['msg_html']);
         $result['msg_html'] = str_replace("{custom.open_RP}",$event['custom_114'],$result['msg_html']);
         $result['msg_html'] = str_replace("{custom.open_general}",$event['custom_61'],$result['msg_html']);
-        $result['msg_html'] = str_replace("{custom.PLLink}",$event['custom_115'],$result['msg_html']);
+        $filedetail = civicrm_api3('Attachment', 'get', array('id' => $event['custom_115'],'return' => 'url', 'check_permissions' => 0));
+        $filedetail = $filedetail['values'];
+        $filedetail = $filedetail[$event['custom_115']];
+        error_log("File details: ".print_r($filedetail,TRUE));
+        error_log("URL ".$filedetail['url']);
+        
+        $fileUrl = "<a href=".$filedetail['url'].">Premium</a>";
+
+        
+        $result['msg_html'] = str_replace("{custom.PLLink}",$fileUrl,$result['msg_html']);
         $result['msg_html'] = str_replace(" 00:00:00",'',$result['msg_html']);
         error_log("Event details: ".print_r($event,TRUE));
         $params = [
