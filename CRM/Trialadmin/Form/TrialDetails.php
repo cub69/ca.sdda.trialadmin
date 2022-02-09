@@ -385,15 +385,12 @@ class CRM_Trialadmin_Form_TrialDetails extends CRM_Core_Form {
         #$group_id="13";
         $group_id[0]="1";
         $template = CRM_Core_Smarty::singleton();
-#        $contact = civicrm_api3('Contact', 'getsingle', ['sequential' => 1,'id' => $values['Requester'],]);
         $province = civicrm_api3('state_province', 'getsingle', ['id'=>$values['Location_province']]);
         $template ->assign('province', $province);
        error_log(print_r($values, TRUE));
         foreach ($values as $key => $value) {
           $template->assign($key, $value);
         }
-        $turl = E::path('templates/CRM/Trialadmin/email/trialDistributePL.tpl');
- #       $emailbody = (CRM_Core_Smarty::singleton()->fetch($turl));
         $result = civicrm_api3('MessageTemplate', 'getsingle', array('id' => 68,));
         $result['msg_html'] = str_replace("{custom.host}",$values['hosting_club'],$result['msg_html']);
         $result['msg_html'] = str_replace("{custom.city}",$values['Location_city'],$result['msg_html']);
@@ -407,12 +404,9 @@ class CRM_Trialadmin_Form_TrialDetails extends CRM_Core_Form {
         $filedetail = civicrm_api3('Attachment', 'get', array('id' => $event['custom_115'],'return' => 'url', 'check_permissions' => 0));
         $filedetail = $filedetail['values'];
         $filedetail = $filedetail[$event['custom_115']];
-        error_log("File details: ".print_r($filedetail,TRUE));
-        error_log("URL ".$filedetail['url']);
-        
-        $fileUrl = "<a href=".$filedetail['url'].">Premium</a>";
-
-        
+        #error_log("File details: ".print_r($filedetail,TRUE));
+        #error_log("URL ".$filedetail['url']);
+        $fileUrl = "<a href=".$filedetail['url'].">DOWNLOAD</a>";
         $result['msg_html'] = str_replace("{custom.PLLink}",$fileUrl,$result['msg_html']);
         $result['msg_html'] = str_replace(" 00:00:00",'',$result['msg_html']);
         error_log("Event details: ".print_r($event,TRUE));
@@ -442,10 +436,6 @@ class CRM_Trialadmin_Form_TrialDetails extends CRM_Core_Form {
             'include' => array(),
             'exclude' => array(),
           ),
-          #'from_name'          => "Test Sender",
-          #'from_email'         => "test_sender@test_sender.com",
-          #'replyto_email'      => "test_sender@test_sender.com",
-          #'reply_id'           => 8,  
           'unsubscribe_id'     => 5,  
           'optout_id'          => 7,  
           'resubscribe_id'     => 6,  
@@ -454,25 +444,24 @@ class CRM_Trialadmin_Form_TrialDetails extends CRM_Core_Form {
           'open_tracking'      => 1,
         ];    
      #  error_log(print_r($params,TRUE));
-  #      try{
+        try{
           $result = civicrm_api3('Mailing', 'create', $params);
-     #     error_log("Results from Mailing API CALL: ".print_r($result,TRUE));
-  #      }
-  #      catch (CiviCRM_API3_Exception $e) {
-  #        // Handle error here.
-  #        $errorMessage = $e->getMessage();
-  #        $errorCode = $e->getErrorCode();
-  #        $errorData = $e->getExtraParams();
-  #        error_log("Error encountered! ".$error_Message." ".$errorCode." ".$errorData);
+          error_log("Results from Mailing API CALL: ".print_r($result,TRUE));
+        }
+        catch (CiviCRM_API3_Exception $e) {
+          // Handle error here.
+          $errorMessage = $e->getMessage();
+          $errorCode = $e->getErrorCode();
+          $errorData = $e->getExtraParams();
+          error_log("Error encountered! ".$error_Message." ".$errorCode." ".$errorData);
 
-  #        return [
-  #          'is_error' => 1,
-  #          'error_message' => $errorMessage,
-  #          'error_code' => $errorCode,
-  #          'error_data' => $errorData,
-  #        ];
-  #      }
-       
+          return [
+            'is_error' => 1,
+            'error_message' => $errorMessage,
+            'error_code' => $errorCode,
+            'error_data' => $errorData,
+          ];
+        }     
       }
       $url = CRM_Utils_System::url( 'civicrm/event/manage/settings', "reset=1&force=1&action=update&id=$eventid" );
       CRM_Core_Session::singleton()->pushUserContext($url);
