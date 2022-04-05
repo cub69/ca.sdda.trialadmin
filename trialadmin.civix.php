@@ -460,5 +460,10 @@ function _trialadmin_civix_civicrm_entityTypes(&$entityTypes) {
       'class' => 'CRM_Trialadmin_DAO_TrialComponents',
       'table' => 'civicrm_trial_components',
     ],
+    'CRM_Trialadmin_DAO_TrialadminLog' => [
+      'name' => 'TrialadminLog',
+      'class' => 'CRM_Trialadmin_DAO_TrialadminLog',
+      'table' => 'civicrm_trialadmin_log',
+    ],
   ]);
 }

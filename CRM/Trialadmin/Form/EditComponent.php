@@ -89,7 +89,7 @@ class CRM_TrialAdmin_Form_EditComponent extends CRM_Core_Form {
       ),
       
     ));
-    error_log("Entering the quickform after build");
+    error_log("Entering the quickform after build - step 2");
     // export form elements
     $this->assign('elementNames', $this->getRenderableElementNames());
     parent::buildQuickForm();
@@ -97,15 +97,15 @@ class CRM_TrialAdmin_Form_EditComponent extends CRM_Core_Form {
 
   public function postProcess() {
     $values = $this->exportValues();
-    error_log("Post processing ...".print_r($values, TRUE));
+    error_log("Post processing Validation...Edit".print_r($values, TRUE));
     $started_components = '';
     $advanced_components = '';
     $excellent_components = '';
     $games_components = '';
-    foreach ($values['started_components'] as $value) {$started_components .= $value.' '; }
-    foreach ($values['advanced_components'] as $value) {$advanced_components .= $value.' '; }
-    foreach ($values['excellent_components'] as $value) {$excellent_components .= $value.' '; }
-    foreach ($values['games_components'] as $value) {$games_components .= $value.' '; }
+    foreach ($values['started_components'] as $value) {$started_components .= $value.', '; }
+    foreach ($values['advanced_components'] as $value) {$advanced_components .= $value.', '; } 
+    foreach ($values['excellent_components'] as $value) {$excellent_components .= $value.', '; }
+    foreach ($values['games_components'] as $value) {$games_components .= $value.', '; }
     $id = $this->_id;
     if ($values["_qf_EditComponent_submit"] = "Submit") {
   	  if ($this->_action == 2){

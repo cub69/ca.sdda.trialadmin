@@ -89,7 +89,7 @@ class CRM_TrialAdmin_Form_AddComponent extends CRM_Core_Form {
       ),
       
     ));
-    error_log("Entering the quickform after build");
+    error_log("Entering the quickform after build - step 1");
     // export form elements
     $this->assign('elementNames', $this->getRenderableElementNames());
     parent::buildQuickForm();
@@ -97,12 +97,12 @@ class CRM_TrialAdmin_Form_AddComponent extends CRM_Core_Form {
 
   public function postProcess() {
     $values = $this->exportValues();
-    error_log("Post processing ...".print_r($values, TRUE));
+    error_log("Post processing Validation...Add".print_r($values, TRUE));
     $started_components = '';
     $advanced_components = '';
     $excellent_components = '';
     $games_components = '';
-    foreach ($values['started_components'] as $value) {$started_components .= $value.', '; }
+    //foreach ($values['started_components'] as $value) {$started_components .= $value.', '; }
     foreach ($values['advanced_components'] as $value) {$advanced_components .= $value.', '; }
     foreach ($values['excellent_components'] as $value) {$excellent_components .= $value.', '; }
     foreach ($values['games_components'] as $value) {$games_components .= $value.', '; }
@@ -115,7 +115,7 @@ class CRM_TrialAdmin_Form_AddComponent extends CRM_Core_Form {
 		      'trial_number' => $values['trial_number'],
 		      'trial_date' => $values['trial_date'],
           'judge' => $values['judge'],
-          'started_components' => $started_components,
+          'started_components' => $values['started_components'],
           'advanced_components' => $advanced_components,
           'excellent_components' => $excellent_components,
           'elite_offered' => $values['elite_offered'],

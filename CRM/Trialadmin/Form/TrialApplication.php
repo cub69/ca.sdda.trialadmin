@@ -28,10 +28,10 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
       
       //$id = "355";
       //error_log(print_r($event, TRUE));
-      error_log("Building the form...".$id);
+      //error_log("Building the form...".$id);
       
       $details = $event['values'][$id];
-      error_log(print_r($details, TRUE)); 
+      //error_log(print_r($details, TRUE)); 
       $this->setDefaults(array( 
           'id' => $details['id'],
           'event_id' => $details['event_id'],
@@ -63,6 +63,13 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
       // this is a new trial application!
       global $current_user;
       error_log(print_r($current_user,TRUE));
+      if ( is_user_logged_in() != TRUE ) {
+        #User is not logged in, return them to the home page
+        error_log("User is not logged in");
+        $location = get_site_url();
+        wp_redirect( $location, 301 );
+        exit;      
+      }
       try {
       $cuser = civicrm_api3('Contact', 'getsingle', ['email' => $current_user->user_email,'display_name' => $current_users->display_name,]);
       }
@@ -78,7 +85,7 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
           'error_data' => $errorData,
         ];
       }
-      error_log(print_r($cuser,TRUE));
+      //error_log(print_r($cuser,TRUE));
       $this->setDefaults(array( 
         'Requester' => $cuser['contact_id'],
         'Requester_email' => $current_user->user_email,
@@ -86,7 +93,7 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
       ));
 
     }
-   error_log("Finished retrieving default values.");
+   //error_log("Finished retrieving default values.");
   }
 
   public function buildQuickForm() {
@@ -141,7 +148,7 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
   public function postProcess() {
     $values = $this->exportValues();
     $$values = $this->exportValues();
-    error_log("The retrieved values from the form are: ".print_r($values, TRUE));
+    // error_log("The retrieved values from the form are: ".print_r($values, TRUE));
 
     if ($values["_qf_TrialApplication_next"] ) {
 
@@ -242,11 +249,36 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
         $params['html'] = $emailbody;
         CRM_Utils_Mail::send($params);
         CRM_Utils_Mail::logger($contact['email'],$params,$emailbody);
-        $params['toName'] = '';
+        $result = civicrm_api3('Trialadmin_log', 'create',[ 
+          'trial_id' => $values['id'],
+          'entity_id' => '100',
+          'entity' => "Trial Admin",
+          'data' => "New trial application - email to requester",
+          'modified_id' => $values['Requester'],
+          'modified_date' => date('Y-m-d H:i:s'),
+        ]);
+        error_log("Log entry");
+        error_log(print_r($result, TRUE));
+
+        $turl = E::path('templates/CRM/Trialadmin/email/ApplicationEmailtoAdmin.tpl');
+        $emailbody = (CRM_Core_Smarty::singleton()->fetch($turl));
+        $params = array();
+        $params['from'] = 'Sporting Detection Dogs Association <norm@sportingdetectiondogs.ca>';
+        $params['subject'] = 'Trial Application for Approval';
+        $params['text'] = '';
+        $params['html'] = $emailbody;
+        $params['toName'] = 'Trial Approvers';
         $params['toEmail'] = 'norm@sportingdetectiondogs.ca';
         $params['cc'] = 'karin@sportingdetectiondogs.ca';
         CRM_Utils_Mail::send($params);
-      
+        $result = civicrm_api3('Trialadmin_log', 'create',[ 
+          'trial_id' => $values['id'],
+          'entity_id' => '100',
+          'entity' => "Trial Admin",
+          'data' => "New trial application - email to approvers",
+          'modified_id' => $values['Requester'],
+          'modified_date' => date('Y-m-d H:i:s'),
+        ]);
         CRM_Core_Session::singleton()->pushUserContext($url);
 
     } elseif ($values["_qf_TrialApplication_cancel"] ) {
@@ -313,5 +345,10 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
     error_log("Highest trial number ".$highesttrialnumber);
     return($highesttrialnumber);
   }
+  public function is_user_logged_in() {
+    $user = wp_get_current_user();
+ 
+    return $user->exists();
+}
 
 }

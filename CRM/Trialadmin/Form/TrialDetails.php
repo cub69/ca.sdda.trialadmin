@@ -117,6 +117,7 @@ class CRM_Trialadmin_Form_TrialDetails extends CRM_Core_Form {
   }
 
   public function postProcess() {
+    global $current_user;
     //error_log("Reload Action this array: ".print_r($this,TRUE));    
     $values = $this->exportValues();
     $$values = $this->exportValues();
@@ -156,7 +157,17 @@ class CRM_Trialadmin_Form_TrialDetails extends CRM_Core_Form {
         'confirm_square_footage' => $values['confirm_square_footage'],
         'confirm_judge_contacted' => $values['confirm_judge_contacted'],
 		    ]); 
-        error_log("Returned value is: ".print_r($result,TRUE));
+        //error_log("Returned value is: ".print_r($result,TRUE));
+        
+        $cuser = civicrm_api3('Contact', 'getsingle', ['email' => $current_user->user_email,'display_name' => $current_users->display_name,]);                
+        $result = civicrm_api3('Trialadmin_log', 'create',[ 
+          'trial_id' => $values['id'],
+          'entity_id' => '200',
+          'entity' => "Event Trial Details",
+          'data' => "Updating trial details",
+          'modified_id' => $cuser['contact_id'],
+          'modified_date' => date('Y-m-d H:i:s'),
+        ]);
         } else {
           // Create a new entry
           error_log("Executing a new create of data");
@@ -187,7 +198,16 @@ class CRM_Trialadmin_Form_TrialDetails extends CRM_Core_Form {
             'confirm_judge_contacted' => $values['confirm_judge_contacted'],
             ]); 
             error_log("Returned value is: ".print_r($result,TRUE));
-    
+            $cuser = civicrm_api3('Contact', 'getsingle', ['email' => $current_user->user_email,'display_name' => $current_users->display_name,]);                
+            $result = civicrm_api3('Trialadmin_log', 'create',[ 
+              'trial_id' => $values['id'],
+              'entity_id' => '210',
+              'entity' => "Event Trial Details",
+              'data' => "Adding trial details",
+              'modified_id' => $cuser['contact_id'],
+              'modified_date' => date('Y-m-d H:i:s'),
+            ]);
+        
         }
 		  //error_log("Previous status was: ".$this->_approved_status);
       //error_log("Current status is: ".$values['approved']);
@@ -303,7 +323,16 @@ class CRM_Trialadmin_Form_TrialDetails extends CRM_Core_Form {
           $params['text'] = '';
           $params['html'] = $emailbody;
           CRM_Utils_Mail::send($params);
-        
+          $cuser = civicrm_api3('Contact', 'getsingle', ['email' => $current_user->user_email,'display_name' => $current_users->display_name,]);                
+          $result = civicrm_api3('Trialadmin_log', 'create',[ 
+            'trial_id' => $values['id'],
+            'entity_id' => '220',
+            'entity' => "Event Trial Details",
+            'data' => "Trial approved and updating trial details",
+            'modified_id' => $cuser['contact_id'],
+            'modified_date' => date('Y-m-d H:i:s'),
+          ]);
+  
           //Register host, trial secretary and judge(s) for the event
           $partic= array();
           $curr = civicrm_api3('Participant', 'get', [
@@ -344,6 +373,16 @@ class CRM_Trialadmin_Form_TrialDetails extends CRM_Core_Form {
               ]);
             }
           }
+          $cuser = civicrm_api3('Contact', 'getsingle', ['email' => $current_user->user_email,'display_name' => $current_users->display_name,]);                
+          $result = civicrm_api3('Trialadmin_log', 'create',[ 
+            'trial_id' => $values['id'],
+            'entity_id' => '230',
+            'entity' => "Event Trial Details",
+            'data' => "Adding judge, host and secretary to participants list",
+            'modified_id' => $cuser['contact_id'],
+            'modified_date' => date('Y-m-d H:i:s'),
+          ]);
+  
           //Set event values - public, and new look Trial description
           $comp1=$comp1['values'];
           $date_ar = array();
@@ -375,6 +414,16 @@ class CRM_Trialadmin_Form_TrialDetails extends CRM_Core_Form {
 
         } else {
           error_log("Trial UNapproved or cancelled");
+          $cuser = civicrm_api3('Contact', 'getsingle', ['email' => $current_user->user_email,'display_name' => $current_users->display_name,]);                
+          $result = civicrm_api3('Trialadmin_log', 'create',[ 
+            'trial_id' => $values['id'],
+            'entity_id' => '240',
+            'entity' => "Event Trial Details",
+            'data' => "Trial unapproved or cancelled",
+            'modified_id' => $cuser['contact_id'],
+            'modified_date' => date('Y-m-d H:i:s'),
+          ]);
+  
         }
       }
       if ($values['submitMailing'] == '1') {
@@ -401,12 +450,14 @@ class CRM_Trialadmin_Form_TrialDetails extends CRM_Core_Form {
         $result['msg_html'] = str_replace("{custom.trial_end}",$event['end_date'],$result['msg_html']);
         $result['msg_html'] = str_replace("{custom.open_RP}",$event['custom_114'],$result['msg_html']);
         $result['msg_html'] = str_replace("{custom.open_general}",$event['custom_61'],$result['msg_html']);
-        $filedetail = civicrm_api3('Attachment', 'get', array('id' => $event['custom_115'],'return' => 'url', 'check_permissions' => 0));
-        $filedetail = $filedetail['values'];
-        $filedetail = $filedetail[$event['custom_115']];
-        #error_log("File details: ".print_r($filedetail,TRUE));
+        //$filedetail = civicrm_api3('Attachment', 'get', array('id' => $event['custom_115'],'return' => 'url', 'check_permissions' => 0));
+        //$filedetail = $filedetail['values'];
+        //$filedetail = $filedetail[$event['custom_115']];
+        #error_log("File details: ".print_r($filedetail,TRUE)); 
         #error_log("URL ".$filedetail['url']);
-        $fileUrl = "<a href=".$filedetail['url'].">DOWNLOAD</a>";
+        //$fileUrl = "<a href=".$filedetail['url'].">DOWNLOAD</a>";
+        $url = '"'.'https://www.sportingdetectiondogs.ca/civicrm/?civiwp=CiviCRM&q=civicrm%2Fevent%2Finfo&reset=1&id='.$eventid.'"';
+        $fileUrl = '<a href='.$url.'>EVENT</a>';
         $result['msg_html'] = str_replace("{custom.PLLink}",$fileUrl,$result['msg_html']);
         $result['msg_html'] = str_replace(" 00:00:00",'',$result['msg_html']);
         error_log("Event details: ".print_r($event,TRUE));
@@ -462,6 +513,16 @@ class CRM_Trialadmin_Form_TrialDetails extends CRM_Core_Form {
             'error_data' => $errorData,
           ];
         }     
+        $cuser = civicrm_api3('Contact', 'getsingle', ['email' => $current_user->user_email,'display_name' => $current_users->display_name,]);                
+        $result = civicrm_api3('Trialadmin_log', 'create',[ 
+          'trial_id' => $values['id'],
+          'entity_id' => '250',
+          'entity' => "Event Trial Details",
+          'data' => "Sending email to Registered Participants",
+          'modified_id' => $cuser['contact_id'],
+          'modified_date' => date('Y-m-d H:i:s'),
+        ]);
+
       }
       $url = CRM_Utils_System::url( 'civicrm/event/manage/settings', "reset=1&force=1&action=update&id=$eventid" );
       CRM_Core_Session::singleton()->pushUserContext($url);

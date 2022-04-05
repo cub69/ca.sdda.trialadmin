@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+<table>
+  <base>CRM/Trialadmin</base>
+  <class>TrialadminLog</class>
+  <name>civicrm_trialadmin_log</name>
+  <comment>Log file for changes to the Trial Application</comment>
+  <log>true</log>
+
+  <field>
+    <name>id</name>
+    <type>int unsigned auto_increment</type>
+    <required>true</required>
+    <comment>Unique TrialadminLog ID</comment>
+    <html>
+      <type>Number</type>
+    </html>
+  </field>
+  <primaryKey>
+    <name>id</name>
+    <autoincrement>true</autoincrement>
+  </primaryKey>
+
+  <field>
+    <name>trial_id</name>
+    <type>int unsigned</type>
+    <length>10</length>
+    <required>true</required>
+    <comment>FK to Trialadmin</comment>
+  </field>
+  <foreignKey>
+    <name>trial_id</name>
+    <table>civicrm_trial_admin</table>
+    <key>id</key>
+    <onDelete>CASCADE</onDelete>
+  </foreignKey>
+  <field>
+    <name>entity_id</name>
+    <type>int unsigned</type>
+    <length>10</length>
+    <required>false</required>
+    <comment>ID of posting entity</comment>
+  </field>
+  <field>
+    <name>entity</name>
+    <type>varchar</type>
+    <length>64</length>
+    <required>false</required>
+    <comment>Posting Entity</comment>
+  </field>
+  <field>
+    <name>data</name>
+    <type>text</type>
+    <required>true</required>
+    <comment>Logged data</comment>
+  </field>
+  <field>
+    <name>modified_id</name>
+    <type>int unsigned</type>
+    <length>10</length>
+    <required>true</required>
+    <comment>ID of modifier</comment>
+  </field>
+  <foreignKey>
+    <name>modified_id</name>
+    <table>civicrm_contact</table>
+    <key>id</key>
+    <onDelete>CASCADE</onDelete>
+  </foreignKey>
+  <field>
+    <name>modified_date</name>
+    <type>datetime NULL ON UPDATE CURRENT_TIMESTAMP</type>
+    <comment>Date time stamp of Entry</comment>
+  </field>
+</table>
