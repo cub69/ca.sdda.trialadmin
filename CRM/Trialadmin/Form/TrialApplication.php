@@ -10,13 +10,26 @@ use CRM_Trialadmin_ExtensionUtil as E;
 class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
   public $action;
   public function preProcess() {
-    // do prep work  
-  //$this->preventAjaxSubmit();
   
     CRM_Utils_System::setTitle(E::ts('Trial Application'));
     $this->_action = CRM_Utils_Request::retrieve('action', 'String', $this);
     $this->assign('url',$this->_url);
     $action = $this->_action;
+    global $current_user;
+    error_log(print_r($current_user,TRUE));
+    if ( is_user_logged_in() != TRUE ) {
+      #User is not logged in, return them to the home page
+      error_log("User is not logged in");
+      $message = "You must be logged in!  Please go to log in.";
+      $title="Not Logged In!";
+      $type="Error";
+      CRM_Core_Session::setStatus($message, $title, $type,);
+      $location = get_site_url()."/login/";
+      wp_redirect( $location, 301 );
+      #header ("Refresh: 10;URL='$location'"); 
+      exit;      
+    }
+
     error_log("Action starting is: ".$action);
     if ($action == '2') {
       //$eventID = $context['event_id'];
@@ -25,10 +38,6 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
       $event = civicrm_api3('TrialAdmin', 'get', ['event_id' => $this->_event_ID,]);
       $components = civicrm_api3('TrialComponents', 'get', ['event_id' => $this->_event_ID]);
       $id = $event["id"];
-      
-      //$id = "355";
-      //error_log(print_r($event, TRUE));
-      //error_log("Building the form...".$id);
       
       $details = $event['values'][$id];
       //error_log(print_r($details, TRUE)); 
@@ -62,16 +71,9 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
     } elseif($action == '1' ) {
       // this is a new trial application!
       global $current_user;
-      error_log(print_r($current_user,TRUE));
-      if ( is_user_logged_in() != TRUE ) {
-        #User is not logged in, return them to the home page
-        error_log("User is not logged in");
-        $location = get_site_url();
-        wp_redirect( $location, 301 );
-        exit;      
-      }
+      
       try {
-      $cuser = civicrm_api3('Contact', 'getsingle', ['email' => $current_user->user_email,'display_name' => $current_users->display_name,]);
+      $cuser = civicrm_api3('Contact', 'getsingle', ['email' => $current_user->user_email,'display_name' => $current_user->display_name,]);
       }
       catch (CiviCRM_API3_Exception $e) {
         //error handler!
@@ -85,7 +87,6 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
           'error_data' => $errorData,
         ];
       }
-      //error_log(print_r($cuser,TRUE));
       $this->setDefaults(array( 
         'Requester' => $cuser['contact_id'],
         'Requester_email' => $current_user->user_email,
