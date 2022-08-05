@@ -16,7 +16,7 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
     $this->assign('url',$this->_url);
     $action = $this->_action;
     global $current_user;
-    error_log(print_r($current_user,TRUE));
+    #error_log(print_r($current_user,TRUE));
     if ( is_user_logged_in() != TRUE ) {
       #User is not logged in, return them to the home page
       error_log("User is not logged in");
@@ -25,12 +25,28 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
       $type="Error";
       CRM_Core_Session::setStatus($message, $title, $type,);
       $location = get_site_url()."/login/";
-      wp_redirect( $location, 301 );
-      #header ("Refresh: 10;URL='$location'"); 
+      #wp_redirect( $location, 301 );
+      header ("Refresh: 2;URL='$location'"); 
       exit;      
     }
+    # RP Check
+    $cuser = civicrm_api3('Contact', 'getsingle', ['email' => $current_user->user_email,'display_name' => $current_user->display_name,]);
+    #error_log(print_r($cuser,TRUE));
 
-    error_log("Action starting is: ".$action);
+    $result = civicrm_api3('Membership', 'get', ['sequential' => 1,'contact_id.id' => $cuser['contact_id'],]);
+    $resultdetails = $result['values']['0'];
+    #error_log(print_r($result,TRUE));
+    #error_log(print_r($resultdetails,TRUE));
+    #error_log("Action starting is: ".$action);
+    if ($result['count'] == 0 || $resultdetails['status_id'] == 4 ) {        #not an RP
+      $message = "You must be an active RP to submit a trial application";
+      $title="Not an Active Registered Participant";
+      $type="Error";
+      CRM_Core_Session::setStatus($message, $title, $type,);
+      $location = get_site_url()."/my-registered-participant-status/";
+      #wp_redirect( $location, 301 );
+      header ("Refresh: 2;URL='$location'"); 
+    }
     if ($action == '2') {
       //$eventID = $context['event_id'];
       $this->_event_ID = CRM_Utils_Request::retrieve('eventid', 'Positive', $this, TRUE);
@@ -72,21 +88,6 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
       // this is a new trial application!
       global $current_user;
       
-      try {
-      $cuser = civicrm_api3('Contact', 'getsingle', ['email' => $current_user->user_email,'display_name' => $current_user->display_name,]);
-      }
-      catch (CiviCRM_API3_Exception $e) {
-        //error handler!
-        $errorMessage = "Sorry, something went wrong! "+$e->getMessage();
-        $errorCode = $e->getErrorCode();
-        $errorData = $e->getExtraParams();
-        return [
-          'is_error' => 1,
-          'error_message' => $errorMessage,
-          'error_code' => $errorCode,
-          'error_data' => $errorData,
-        ];
-      }
       $this->setDefaults(array( 
         'Requester' => $cuser['contact_id'],
         'Requester_email' => $current_user->user_email,
@@ -144,6 +145,46 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
     // export form elements
     $this->assign('elementNames', $this->getRenderableElementNames());
     parent::buildQuickForm();
+  }
+
+  public function addRules() {
+    $this->addFormRule(array('CRM_Trialadmin_Form_TrialApplication', 'myRules'));
+  }
+
+  /**
+   * Here's our custom validation callback
+   */
+  public static function myRules($values) {
+    $errors = array();
+    if ($values['Location_city'] == '') {
+      $errors['Location_city'] = ts('You must enter a Location City');
+    }
+    if ($values['Location_name'] == '') {
+      $errors['Location_name'] = ts('You must enter a Location name');
+    }
+    if ($values['Street_address'] == '') {
+      $errors['Street_address'] = ts('You must enter a Location Street Address');
+    }
+    if ($values['hosting_club'] == '') {
+      $errors['hosting_club'] = ts('You must enter a Hosting Club');
+    }
+    if ($values['Location_province'] == '') {
+      $errors['Location_province'] = ts('You must enter a Location province');
+    }
+    if ($values['confirm_square_footage'] == 0) {
+      $errors['confirm_square_footage'] = ts('You must check the box to confirm square footage');
+    }
+    if ($values['confirm_judge_contacted'] == 0) {
+      $errors['confirm_judge_contacted'] = ts('You must check the box to confirm you spoke to the judge about the venue');
+    }
+    if ($values['trial_chairperson'] == '') {
+      $errors['trial_chairperson'] = ts('You must select from list a trial Chairperson (hint last name first)');
+    }
+    if ($values['trial_secretary'] == '') {
+      $errors['trial_secretary'] = ts('You must select from list a trial Secretary (hint last name first)');
+    }
+
+    return empty($errors) ? TRUE : $errors;
   }
 
   public function postProcess() {
