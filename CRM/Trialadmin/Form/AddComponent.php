@@ -94,6 +94,24 @@ class CRM_TrialAdmin_Form_AddComponent extends CRM_Core_Form {
     $this->assign('elementNames', $this->getRenderableElementNames());
     parent::buildQuickForm();
   }
+  public function addRules() {
+    $this->addFormRule(array('CRM_TrialAdmin_Form_AddComponent', 'myRules'));
+  }
+
+  /**
+   * Here's our custom validation callback
+   */
+  public static function myRules($values) {
+    $errors = array();
+    if ($values['trial_date'] == '') {
+      $errors['trial_date'] = ts('You must enter a Trial Date to add a component');
+    }
+    if ($values['judge'] == '') {
+      $errors['judge'] = ts('You must enter a valid judge (hint: last name first)');
+    }
+
+    return empty($errors) ? TRUE : $errors;
+  }
 
   public function postProcess() {
     $values = $this->exportValues();
