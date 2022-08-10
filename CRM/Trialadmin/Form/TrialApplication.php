@@ -95,7 +95,7 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
       ));
 
     }
-   //error_log("Finished retrieving default values.");
+   error_log("Finished retrieving default values.");
   }
 
   public function buildQuickForm() {
