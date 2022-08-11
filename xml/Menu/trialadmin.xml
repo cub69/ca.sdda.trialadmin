@@ -36,4 +36,10 @@
     <title>AddComponent</title>
     <access_arguments>access CiviCRM</access_arguments>
   </item>
+  <item>
+    <path>civicrm/checkrp</path>
+    <page_callback>CRM_Trialadmin_Form_CheckRP</page_callback>
+    <title>CheckRP</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
 </menu>
