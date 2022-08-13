@@ -27,10 +27,18 @@ class CRM_Trialadmin_Form_CheckRP extends CRM_Core_Form {
       exit;      
     }
     # RP Check
-    $cuser = civicrm_api3('Contact', 'getsingle', ['email' => $current_user->user_email,'display_name' => $current_user->display_name,]);
-    $result = civicrm_api3('Membership', 'get', ['sequential' => 1,'contact_id.id' => $cuser['contact_id'],]);
-    $resultdetails = $result['values']['0'];
-    if ($result['count'] == 0 || $resultdetails['status_id'] == 4 ) {        #not an RP
+    $params = array('email' => $current_user->user_email,'display_name' => $current_user->display_name);
+    $cuser = get_single_contact($params);
+    write_log($params);
+    write_log($cuser);
+    $params = array('sequential' => 1,'contact_id.id' => $cuser['contact_id']);
+    $result = get_single_member($params);
+    write_log($params);
+    write_log($result);
+//    $cuser = civicrm_api3('Contact', 'getsingle', ['email' => $current_user->user_email,'display_name' => $current_user->display_name,]);
+//    $result = civicrm_api3('Membership', 'get', ['sequential' => 1,'contact_id.id' => $cuser['contact_id'],]);
+
+    if (isset($cuser['is_error']) || isset($result['is_error']) ) {
       $message = "You must be an active trial host or secretary to use this feature";
       $title="Not an Active Registered Participant";
       $type="Error";
@@ -39,6 +47,22 @@ class CRM_Trialadmin_Form_CheckRP extends CRM_Core_Form {
       #wp_redirect( $location, 301 );
       header ("Refresh: 2;URL='$location'"); 
     }
+    $resultdetails = $result['values']['0'];
+    $params = array('trial_chairperson' => $cuser['contact_id'], 'return' => 'event_id.start_date',);
+    $chair = get_trialadmin($params);
+    $params = array('trial_secretary' => $cuser['contact_id'], 'return' => 'event_id.start_date');
+    $secretary = get_trialadmin($params);
+    if ($chair['count'] == 0 && $secretary['count'] == 0 ) {
+      $message = "You must be an active trial host or secretary to use this feature";
+      $title="Not an Active Trial host or Secretary";
+      $type="Error";
+      CRM_Core_Session::setStatus($message, $title, $type,);
+      $location = get_site_url();
+      #wp_redirect( $location, 301 );
+      header ("Refresh: 2;URL='$location'"); 
+    }
+    write_log($chair);
+    write_log($secretary);
   }
 
   public function buildQuickForm() {
