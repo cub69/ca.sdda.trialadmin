@@ -78,6 +78,7 @@ ENGINE=InnoDB;
 -- *******************************************************/
 CREATE TABLE `civicrm_trial_components` (
   `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT 'Unique TrialComponents ID',
+  `ta_id` int unsigned COMMENT 'FK to TrialAdmin',
   `event_id` int unsigned COMMENT 'FK to Event',
   `trial_number` int unsigned COMMENT 'Trial Number',
   `trial_date` datetime COMMENT 'Date of this Trial Event',
@@ -88,6 +89,7 @@ CREATE TABLE `civicrm_trial_components` (
   `elite_offered` tinyint COMMENT 'Started components',
   `games_components` text COMMENT 'Games components',
   PRIMARY KEY (`id`),
+  CONSTRAINT FK_civicrm_trial_components_ta_id FOREIGN KEY (`ta_id`) REFERENCES `civicrm_trial_admin`(`id`) ON DELETE CASCADE,
   CONSTRAINT FK_civicrm_trial_components_event_id FOREIGN KEY (`event_id`) REFERENCES `civicrm_event`(`id`) ON DELETE CASCADE,
   CONSTRAINT FK_civicrm_trial_components_judge FOREIGN KEY (`judge`) REFERENCES `civicrm_contact`(`id`) ON DELETE CASCADE
 )

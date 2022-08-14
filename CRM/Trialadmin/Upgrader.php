@@ -61,12 +61,20 @@ class CRM_Trialadmin_Upgrader extends CRM_Trialadmin_Upgrader_Base {
    * @return TRUE on success
    * @throws Exception
    */
-  // public function upgrade_4200() {
-  //   $this->ctx->log->info('Applying update 4200');
-  //   CRM_Core_DAO::executeQuery('UPDATE foo SET bar = "whiz"');
-  //   CRM_Core_DAO::executeQuery('DELETE FROM bang WHERE willy = wonka(2)');
-  //   return TRUE;
-  // }
+  public function upgrade_1900() {
+       $this->ctx->log->info('Applying update 1900');
+       // this path is relative to the extension base dir
+       $this->executeSqlFile('sql/upgrade_1900.sql');
+       return TRUE;
+     }
+
+  public function upgrade_1901() {
+     $this->ctx->log->info('Applying update 1901');
+     CRM_Core_DAO::executeQuery('ALTER TABLE `civicrm_trial_components` ADD `ta_id` INT UNSIGNED AFTER `id`');
+     CRM_Core_DAO::executeQuery('ALTER TABLE civicrm_trial_components ADD CONSTRAINT Fk_TrialAdmin FOREIGN KEY (ta_id) REFERENCES civicrm_trial_admin(id) ON DELETE CASCADE');
+     CRM_Core_DAO::executeQuery('UPDATE civicrm_trial_components INNER JOIN civicrm_trial_admin ON civicrm_trial_admin.event_id = civicrm_trial_components.event_id SET civicrm_trial_components.ta_id = civicrm_trial_admin.id');
+     return TRUE;
+   }
 
 
   /**

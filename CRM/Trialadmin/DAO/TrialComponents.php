@@ -38,6 +38,13 @@ class CRM_Trialadmin_DAO_TrialComponents extends CRM_Core_DAO {
    */
   public $id;
 
+   /**
+   * FK to Event
+   *
+   * @var int
+   */
+  public $ta_id;
+
   /**
    * FK to Event
    *
@@ -157,6 +164,18 @@ class CRM_Trialadmin_DAO_TrialComponents extends CRM_Core_DAO {
             'type' => 'Number',
           ],
           'readonly' => TRUE,
+          'add' => NULL,
+        ],
+        'ta_id' => [
+          'name' => 'ta_id',
+          'type' => CRM_Utils_Type::T_INT,
+          'description' => E::ts('FK to TrialAdmin'),
+          'where' => 'civicrm_trial_components.ta_id',
+          'table_name' => 'civicrm_trial_components',
+          'entity' => 'TrialComponents',
+          'bao' => 'CRM_Trialadmin_DAO_TrialComponents',
+          'localizable' => 0,
+          'FKClassName' => 'CRM_Event_DAO_Event',
           'add' => NULL,
         ],
         'event_id' => [

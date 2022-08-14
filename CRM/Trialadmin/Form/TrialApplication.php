@@ -13,7 +13,9 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
   
     CRM_Utils_System::setTitle(E::ts('Trial Application'));
     $this->_action = CRM_Utils_Request::retrieve('action', 'String', $this);
+    $this->_id = CRM_Utils_Request::retrieve('id', 'String', $this);
     $this->assign('url',$this->_url);
+    $id = $this->_id;
     $action = $this->_action;
     global $current_user;
     #error_log(print_r($current_user,TRUE));
@@ -30,71 +32,64 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
       exit;      
     }
     # RP Check
-    $cuser = civicrm_api3('Contact', 'getsingle', ['email' => $current_user->user_email,'display_name' => $current_user->display_name,]);
+    $params = array('email' => $current_user->user_email,'display_name' => $current_user->display_name,);
+    $cuser = get_single_contact($params);
+    //$cuser = civicrm_api3('Contact', 'getsingle', ['email' => $current_user->user_email,'display_name' => $current_user->display_name,]);
     #error_log(print_r($cuser,TRUE));
-
-    $result = civicrm_api3('Membership', 'get', ['sequential' => 1,'contact_id.id' => $cuser['contact_id'],]);
+    $params = array('sequential' => 1,'contact_id.id' => $cuser['contact_id'],);
+    $result = get_single_member($params);
+    //$result = civicrm_api3('Membership', 'get', ['sequential' => 1,'contact_id.id' => $cuser['contact_id'],]);
     $resultdetails = $result['values']['0'];
     #error_log(print_r($result,TRUE));
     #error_log(print_r($resultdetails,TRUE));
     #error_log("Action starting is: ".$action);
-    if ($result['count'] == 0 || $resultdetails['status_id'] == 4 ) {        #not an RP
-      $message = "You must be an active RP to submit a trial application";
-      $title="Not an Active Registered Participant";
-      $type="Error";
-      CRM_Core_Session::setStatus($message, $title, $type,);
-      $location = get_site_url()."/my-registered-participant-status/";
-      #wp_redirect( $location, 301 );
-      header ("Refresh: 2;URL='$location'"); 
-    }
-    if ($action == '2') {
-      //$eventID = $context['event_id'];
-      $this->_event_ID = CRM_Utils_Request::retrieve('eventid', 'Positive', $this, TRUE);
-      $eventid = $this->_event_ID;
-      $event = civicrm_api3('TrialAdmin', 'get', ['event_id' => $this->_event_ID,]);
-      $components = civicrm_api3('TrialComponents', 'get', ['event_id' => $this->_event_ID]);
-      $id = $event["id"];
+
+    global $current_user;
       
-      $details = $event['values'][$id];
-      //error_log(print_r($details, TRUE)); 
+    // Temp create trial admin entry to assign ID too
+    if ($id <= 0) {
+      $result = civicrm_api3('TrialAdmin', 'create', ['approved' => 0,]); 
+      $id = $result['id'];
+      error_log("New ID is: ".$id );
       $this->setDefaults(array( 
-          'id' => $details['id'],
-          'event_id' => $details['event_id'],
-          'hosting_club' => $details['hosting_club'],
-          'Requester' => $details['Requester'],
-          'Requester_RP' => $details['Requester_RP'],
-          'Requester_Name' => $details['Requester_Name'],
-          'Requester_lastname' => $details['Requester_lastname'],
-          'Requester_email' => $details['Requester_email'],
-          'Location_name' => $details['Location_name'],
-          'Street_address' => $details['Street_address'],
-          'Location_city' => $details['Location_city'],
-          'Location_province' => $details['Location_province'],
-          'Location_country' => $details['Location_country'],
-          'trial_chairperson' => $details['trial_chairperson'],
-          'trial_secretary' => $details['trial_secretary'],
-          'venue_description' => $details['venue_description'],
-          'space_for_containers' => $details['space_for_containers'],
-          'space_for_interior' => $details['space_for_interior'],
-          'space_for_exterior' => $details['space_for_exterior'],
-          'staging_and_crating' => $details['staging_and_crating'],
-          'space_for_secretary' => $details['space_for_secretary'],
-          'space_for_judge' => $details['space_for_judge'],
-          'confirm_square_footage' => $details['confirm_square_footage'],
-          'confirm_judge_contacted' => $details['confirm_judge_contacted'],
-          
-      ));
-    } elseif($action == '1' ) {
-      // this is a new trial application!
-      global $current_user;
-      
-      $this->setDefaults(array( 
+        'id' => $id,
         'Requester' => $cuser['contact_id'],
         'Requester_email' => $current_user->user_email,
         'Location_country' => 'Canada',
-      ));
-
+      ));  
+    } else {
+      $result = civicrm_api3('TrialAdmin', 'get', ['id' => $id]);
+      $values = $result['values'][$id];
+      error_log("Retrieved record: ".print_r($values,TRUE));
+      $this->setDefaults(array(
+        'id' => $values['id'],
+        'ta_id' => $values['ta_id'],
+        'event_id' => $event_id,
+        'approved' => 0,
+        'hosting_club' => $values['hosting_club'],
+        'Requester' => $values['Requester'],
+        'Requester_RP' => $values['Requester_RP'],
+        'Requester_Name' => $values['Requester_Name'],
+        'Requester_lastname' => $values['Requester_lastname'],
+        'Requester_email' => $values['Requester_email'],
+        'Location_name' => $values['Location_name'],
+        'Street_address' => $values['Street_address'],
+        'Location_city' => $values['Location_city'],
+        'Location_province' => $values['Location_province'],
+        'Location_country' => $values['Location_country'],
+        'trial_chairperson' => $values['trial_chairperson'],
+        'trial_secretary' => $values['trial_secretary'],
+        'venue_description' => $values['venue_description'],
+        'space_for_containers' => $values['space_for_containers'],
+        'space_for_interior' => $values['space_for_interior'],
+        'space_for_exterior' => $values['space_for_exterior'],
+        'staging_and_crating' => $values['staging_and_crating'],
+        'space_for_secretary' => $values['space_for_secretary'],
+        'space_for_judge' => $values['space_for_judge'],
+        'confirm_square_footage' => $values['confirm_square_footage'],
+        'confirm_judge_contacted' => $values['confirm_judge_contacted'],));
     }
+
    error_log("Finished retrieving default values.");
   }
 
@@ -126,11 +121,6 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
     $this->addEntityRef('trial_chairperson', ts('Select Trial Chairperson'));
     $this->addEntityRef('trial_secretary', ts('Select Trial Secretary'));
     $this->addButtons(array(
-      array(
-        'type' => 'next',
-        'name' => E::ts('Next Step'),
-        'isDefault' => FALSE,
-      ),
       array(
         'type' => 'done',
         'name' => E::ts('Submit Application'),
@@ -190,142 +180,95 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
   public function postProcess() {
     $values = $this->exportValues();
     $$values = $this->exportValues();
-    // error_log("The retrieved values from the form are: ".print_r($values, TRUE));
-
-    if ($values["_qf_TrialApplication_next"] ) {
-
-		  error_log("Executing a save/update of data".$this->_action);
-      if ($this->_action == '1') {
-        // need to add some error checking here
-        $event_id = $this->createEvent($values);
-        error_log("We are adding a new Trial Admin event: ".$event_id);
-        $result = civicrm_api3('TrialAdmin', 'create', [
-          'event_id' => $event_id,
-          'approved' => 0,
-          'hosting_club' => $values['hosting_club'],
-          'Requester' => $values['Requester'],
-          'Requester_RP' => $values['Requester_RP'],
-          'Requester_Name' => $values['Requester_Name'],
-          'Requester_lastname' => $values['Requester_lastname'],
-          'Requester_email' => $values['Requester_email'],
-          'Location_name' => $values['Location_name'],
-          'Street_address' => $values['Street_address'],
-          'Location_city' => $values['Location_city'],
-          'Location_province' => $values['Location_province'],
-          'Location_country' => $values['Location_country'],
-          'trial_chairperson' => $values['trial_chairperson'],
-          'trial_secretary' => $values['trial_secretary'],
-          'venue_description' => $values['venue_description'],
-          'space_for_containers' => $values['space_for_containers'],
-          'space_for_interior' => $values['space_for_interior'],
-          'space_for_exterior' => $values['space_for_exterior'],
-          'staging_and_crating' => $values['staging_and_crating'],
-          'space_for_secretary' => $values['space_for_secretary'],
-          'space_for_judge' => $values['space_for_judge'],
-          'confirm_square_footage' => $values['confirm_square_footage'],
-          'confirm_judge_contacted' => $values['confirm_judge_contacted'],
-	      ]); 
-        $evd=$event_id;
- 	      error_log(print_r($result, TRUE));
-      } else {
-        //this is an update
-        error_log("We are updating the existing Trial admin event ".$values['id']." ".$values['event_id']);
-        $result = civicrm_api3('TrialAdmin', 'create', [
-          'id' => $values['id'],
-          'event_id' => $$values['event_id'],
-          'approved' => 0,
-          'hosting_club' => $values['hosting_club'],
-          'Requester' => $values['Requester'],
-          'Requester_RP' => $values['Requester_RP'],
-          'Requester_Name' => $values['Requester_Name'],
-          'Requester_lastname' => $values['Requester_lastname'],
-          'Requester_email' => $values['Requester_email'],
-          'Location_name' => $values['Location_name'],
-          'Street_address' => $values['Street_address'],
-          'Location_city' => $values['Location_city'],
-          'Location_province' => $values['Location_province'],
-          'Location_country' => $values['Location_country'],
-          'trial_chairperson' => $values['trial_chairperson'],
-          'trial_secretary' => $values['trial_secretary'],
-          'venue_description' => $values['venue_description'],
-          'space_for_containers' => $values['space_for_containers'],
-          'space_for_interior' => $values['space_for_interior'],
-          'space_for_exterior' => $values['space_for_exterior'],
-          'staging_and_crating' => $values['staging_and_crating'],
-          'space_for_secretary' => $values['space_for_secretary'],
-          'space_for_judge' => $values['space_for_judge'],
-          'confirm_square_footage' => $values['confirm_square_footage'],
-          'confirm_judge_contacted' => $values['confirm_judge_contacted'],
-	      ]); 
-        $evd = $values['event_id'];
+    //error_log("The retrieved values from the form are: ".print_r($values, TRUE));
+    if ($values["_qf_TrialApplication_done"] ) {
+      $event_id = $this->createEvent($values);
+      $result = civicrm_api3('TrialAdmin', 'create', [
+            'id' => $values['id'],
+            'event_id' => $event_id,
+            'approved' => 0,
+            'hosting_club' => $values['hosting_club'],
+            'Requester' => $values['Requester'],
+            'Requester_RP' => $values['Requester_RP'],
+            'Requester_Name' => $values['Requester_Name'],
+            'Requester_lastname' => $values['Requester_lastname'],
+            'Requester_email' => $values['Requester_email'],
+            'Location_name' => $values['Location_name'],
+            'Street_address' => $values['Street_address'],
+            'Location_city' => $values['Location_city'],
+            'Location_province' => $values['Location_province'],
+            'Location_country' => $values['Location_country'],
+            'trial_chairperson' => $values['trial_chairperson'],
+            'trial_secretary' => $values['trial_secretary'],
+            'venue_description' => $values['venue_description'],
+            'space_for_containers' => $values['space_for_containers'],
+            'space_for_interior' => $values['space_for_interior'],
+            'space_for_exterior' => $values['space_for_exterior'],
+            'staging_and_crating' => $values['staging_and_crating'],
+            'space_for_secretary' => $values['space_for_secretary'],
+            'space_for_judge' => $values['space_for_judge'],
+            'confirm_square_footage' => $values['confirm_square_footage'],
+            'confirm_judge_contacted' => $values['confirm_judge_contacted'],
+          ]); 
+        
+      error_log("Submitting the trial app: ");
+      $template = CRM_Core_Smarty::singleton();
+      $params = array('sequential' => 1,'id' => $values['Requester'],);
+      $contact = get_single_contact($params);
+      //$contact = civicrm_api3('Contact', 'getsingle', ['sequential' => 1,'id' => $values['Requester'],]);
+      $province = civicrm_api3('state_province', 'getsingle', ['id'=>$values['Location_province']]);
+      $template ->assign('province', $province);
+      $params = array('sequential' => 1,'id' => $values['trial_chairperson'],);
+      $trialchair = get_single_contact($params);
+      $params = array('sequential' => 1,'id' => $values['trial_secretary'],);
+      $trialsecretary = get_single_contact($params);
+      foreach ($contact as $key => $value) {
+        $template->assign($key, $value);
+      }         
+      foreach ($values as $key => $value) {
+        $template->assign($key, $value);
       }
-      //go somewhere now that they are done
-//      $url = CRM_Utils_System::url('civicrm/TrialDetails', "reset=1&action=update&eventid=$event_id");
-      $url = CRM_Utils_System::url( 'civicrm/trialapplication', "action=update&eventid=$evd" );
-      error_log("Next steps pressed".$url."    Event ID: ".$evd);        
+      $template->assign('trial_chair', $trialchair['display_name']);
+      $template->assign('trial_secr', $trialsecretary['display_name']);
+      $turl = E::path('templates/CRM/Trialadmin/email/ApplicationEmail.tpl');
+      $emailbody = (CRM_Core_Smarty::singleton()->fetch($turl));
+      $params = array();
+      $params['from'] = 'Sporting Detection Dogs Association <norm@sportingdetectiondogs.ca>';
+      $params['toName'] = $values['Requester_Name'].' '.$values['Requester_lastname'];
+      $params['toEmail'] = $contact['email'];
+      $params['subject'] = 'Trial Application';
+      $params['text'] = '';
+      $params['html'] = $emailbody;
+      CRM_Utils_Mail::send($params);
+      CRM_Utils_Mail::logger($contact['email'],$params,$emailbody);
+      $result = civicrm_api3('Trialadmin_log', 'create',[ 
+        'trial_id' => $values['id'],
+        'entity_id' => '100',
+        'entity' => "Trial Admin",
+        'data' => "New trial application - email to requester",
+        'modified_id' => $values['Requester'],
+        'modified_date' => date('Y-m-d H:i:s'),
+      ]);
+      $turl = E::path('templates/CRM/Trialadmin/email/ApplicationEmailtoAdmin.tpl');
+      $emailbody = (CRM_Core_Smarty::singleton()->fetch($turl));
+      $params = array();
+      $params['from'] = 'Sporting Detection Dogs Association <norm@sportingdetectiondogs.ca>';
+      $params['subject'] = 'Trial Application for Approval';
+      $params['text'] = '';
+      $params['html'] = $emailbody;
+      $params['toName'] = 'Trial Approvers';
+      $params['toEmail'] = 'norm@sportingdetectiondogs.ca';
+      $params['cc'] = 'karin@sportingdetectiondogs.ca';
+      CRM_Utils_Mail::send($params);
+      $result = civicrm_api3('Trialadmin_log', 'create',[ 
+        'trial_id' => $values['id'],
+        'entity_id' => '100',
+        'entity' => "Trial Admin",
+        'data' => "New trial application - email to approvers",
+        'modified_id' => $values['Requester'],
+        'modified_date' => date('Y-m-d H:i:s'),
+      ]);
       CRM_Core_Session::singleton()->pushUserContext($url);
-    } elseif ($values["_qf_TrialApplication_done"] ) {
-        error_log("Submitting the trial app: ");
-        $template = CRM_Core_Smarty::singleton();
-        $contact = civicrm_api3('Contact', 'getsingle', ['sequential' => 1,'id' => $values['Requester'],]);
-        $province = civicrm_api3('state_province', 'getsingle', ['id'=>$values['Location_province']]);
-        $template ->assign('province', $province);
-        $trialchair = civicrm_api3('Contact', 'getsingle', ['sequential' => 1,'id' => $values['trial_chairperson'],]);
-        $trialsecretary = civicrm_api3('Contact', 'getsingle', ['sequential' => 1,'id' => $values['trial_secretary'],]);
-        foreach ($contact as $key => $value) {
-          $template->assign($key, $value);
-        }         
-        foreach ($values as $key => $value) {
-          $template->assign($key, $value);
-        }
-        $template->assign('trial_chair', $trialchair['display_name']);
-        $template->assign('trial_secr', $trialsecretary['display_name']);
-        $turl = E::path('templates/CRM/Trialadmin/email/ApplicationEmail.tpl');
-        $emailbody = (CRM_Core_Smarty::singleton()->fetch($turl));
-        $params = array();
-        $params['from'] = 'Sporting Detection Dogs Association <norm@sportingdetectiondogs.ca>';
-        $params['toName'] = $values['Requester_Name'].' '.$values['Requester_lastname'];
-        $params['toEmail'] = $contact['email'];
-        $params['subject'] = 'Trial Application';
-        $params['text'] = '';
-        $params['html'] = $emailbody;
-        CRM_Utils_Mail::send($params);
-        CRM_Utils_Mail::logger($contact['email'],$params,$emailbody);
-        $result = civicrm_api3('Trialadmin_log', 'create',[ 
-          'trial_id' => $values['id'],
-          'entity_id' => '100',
-          'entity' => "Trial Admin",
-          'data' => "New trial application - email to requester",
-          'modified_id' => $values['Requester'],
-          'modified_date' => date('Y-m-d H:i:s'),
-        ]);
-        error_log("Log entry");
-        error_log(print_r($result, TRUE));
-
-        $turl = E::path('templates/CRM/Trialadmin/email/ApplicationEmailtoAdmin.tpl');
-        $emailbody = (CRM_Core_Smarty::singleton()->fetch($turl));
-        $params = array();
-        $params['from'] = 'Sporting Detection Dogs Association <norm@sportingdetectiondogs.ca>';
-        $params['subject'] = 'Trial Application for Approval';
-        $params['text'] = '';
-        $params['html'] = $emailbody;
-        $params['toName'] = 'Trial Approvers';
-        $params['toEmail'] = 'norm@sportingdetectiondogs.ca';
-        $params['cc'] = 'karin@sportingdetectiondogs.ca';
-        CRM_Utils_Mail::send($params);
-        $result = civicrm_api3('Trialadmin_log', 'create',[ 
-          'trial_id' => $values['id'],
-          'entity_id' => '100',
-          'entity' => "Trial Admin",
-          'data' => "New trial application - email to approvers",
-          'modified_id' => $values['Requester'],
-          'modified_date' => date('Y-m-d H:i:s'),
-        ]);
-        CRM_Core_Session::singleton()->pushUserContext($url);
-
-    } elseif ($values["_qf_TrialApplication_cancel"] ) {
-      // hmmm need to clean this up
-      error_log("Cancelling the trial app: ".$url);        
     }
   }
 

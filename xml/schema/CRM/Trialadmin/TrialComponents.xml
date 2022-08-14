@@ -20,7 +20,25 @@
     <name>id</name>
     <autoincrement>true</autoincrement>
   </primaryKey>
-
+<field>
+    <name>ta_id</name>
+    <type>int unsigned</type>
+    <comment>FK to TriaAdmin</comment>
+  </field>
+  <foreignKey>
+    <name>id</name>
+    <table>civicrm_trial_admin</table>
+    <key>id</key>
+    <onDelete>CASCADE</onDelete>
+  </foreignKey>
+<field>
+  <name>trial_number</name>
+  <type>int unsigned</type>
+  <comment>Trial Number</comment>
+  <html>
+    <type>int unsigned</type>
+  </html>
+</field>
   <field>
     <name>event_id</name>
     <type>int unsigned</type>
