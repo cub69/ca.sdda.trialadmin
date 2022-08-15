@@ -131,6 +131,11 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
         'name' => E::ts('Cancel'),
         'isDefault' => FALSE,
       ),
+      array(
+        'type' => 'submit',
+        'name' => E::ts('Add Component'),
+        'isDefault' => FALSE,
+      ),
     ));
     // export form elements
     $this->assign('elementNames', $this->getRenderableElementNames());
@@ -181,8 +186,47 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
     $values = $this->exportValues();
     $$values = $this->exportValues();
     //error_log("The retrieved values from the form are: ".print_r($values, TRUE));
-    if ($values["_qf_TrialApplication_done"] ) {
+    if ($values["_qf_TrialApplication_submit"] ) {
+      error_log("The value of event: ".$event_id);
+      if ($event_id == null ) {
       $event_id = $this->createEvent($values);
+      }
+      $result = civicrm_api3('TrialAdmin', 'create', [
+            'id' => $values['id'],
+            'event_id' => $event_id,
+            'approved' => 0,
+            'hosting_club' => $values['hosting_club'],
+            'Requester' => $values['Requester'],
+            'Requester_RP' => $values['Requester_RP'],
+            'Requester_Name' => $values['Requester_Name'],
+            'Requester_lastname' => $values['Requester_lastname'],
+            'Requester_email' => $values['Requester_email'],
+            'Location_name' => $values['Location_name'],
+            'Street_address' => $values['Street_address'],
+            'Location_city' => $values['Location_city'],
+            'Location_province' => $values['Location_province'],
+            'Location_country' => $values['Location_country'],
+            'trial_chairperson' => $values['trial_chairperson'],
+            'trial_secretary' => $values['trial_secretary'],
+            'venue_description' => $values['venue_description'],
+            'space_for_containers' => $values['space_for_containers'],
+            'space_for_interior' => $values['space_for_interior'],
+            'space_for_exterior' => $values['space_for_exterior'],
+            'staging_and_crating' => $values['staging_and_crating'],
+            'space_for_secretary' => $values['space_for_secretary'],
+            'space_for_judge' => $values['space_for_judge'],
+            'confirm_square_footage' => $values['confirm_square_footage'],
+            'confirm_judge_contacted' => $values['confirm_judge_contacted'],
+          ]); 
+          //$url = <a title="Add a Component" class="button_name button crm-popup" href='{crmURL p="civicrm/addcomponent" q="reset=1&action=add&id=`$form.id.value`"}'>
+          $location = get_site_url()."/civicrm?civiwp=CiviCRM&q=civicrm/addcomponent&reset=1&action=add&id=".$values['id'];
+          #wp_redirect( $location, 301 );
+          header ("Refresh: 2;URL='$location'"); 
+    }
+    if ($values["_qf_TrialApplication_done"] ) {
+      if ($event_id == null ) {
+        $event_id = $this->createEvent($values);
+        }
       $result = civicrm_api3('TrialAdmin', 'create', [
             'id' => $values['id'],
             'event_id' => $event_id,
@@ -322,7 +366,7 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
 
   public function get_next_trial_number() {
 
-    $query = "SELECT max(trial_number) as `h1` FROM `civicrm_trialcomponents`";;
+    $query = "SELECT max(trial_number) as `h1` FROM `civicrm_trial_components`";;
     $dao = CRM_Core_DAO::executeQuery( $query );
     $dao->fetch();
     error_log("Trial numbers: ".$dao->h1);

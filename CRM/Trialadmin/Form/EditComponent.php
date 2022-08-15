@@ -10,6 +10,7 @@ use CRM_TrialAdmin_ExtensionUtil as E;
 class CRM_TrialAdmin_Form_EditComponent extends CRM_Core_Form {
 
   public $_id;
+  public $_event_id;
   public $_action;
   //public $_event_id;
   
@@ -17,18 +18,20 @@ class CRM_TrialAdmin_Form_EditComponent extends CRM_Core_Form {
 	  // do prep work  
     $this->preventAjaxSubmit();
 
-	  CRM_Utils_System::setTitle(E::ts('Edit Component'));
+	  CRM_Utils_System::setTitle(E::ts('Add/Edit Component'));
 	  $this->_action = CRM_Utils_Request::retrieve('action', 'String', $this);	
 	  error_log("The action of this record is: ".$this->_action);
     
     if ($this->_action == 2) {
       $this->_id = CRM_Utils_Request::retrieve('id', 'Positive', $this, TRUE);
+      $this->_eventid = CRM_Utils_Request::retrieve('eventid', 'Positive', $this, TRUE);
       error_log("The ID of this record is: ".$this->_id);
       $components = civicrm_api3('TrialComponents', 'get', ['id' => $this->_id,]);
       
         $component = $components['values'][$this->_id];
         error_log(print_r($component,TRUE));
         $this->setDefaults(array( 
+            'ta_id' => $component['ta_id'],
             'event_id' => $component['event_id'],
             'trial_number' => $component['trial_number'],
             'trial_date' => $component['trial_date'],
@@ -42,14 +45,11 @@ class CRM_TrialAdmin_Form_EditComponent extends CRM_Core_Form {
         //error_log('Started components: '. print_r($component['started_components'], TRUE));
     } elseif ($this->_action == 1) {
           error_log("processing as new");  
-          $this->_eventid = CRM_Utils_Request::retrieve('eventid', 'Positive', $this, TRUE);
-          $comp = civicrm_api3('TrialComponents', 'get', []);
-          $comp = $comp['values'];
-          $tns = array();
-          foreach($comp as $key=>$value) {array_push($tns, $value['trial_number']); };
-          $newTrialNum = max($tns)+1;
-          error_log(print_r($comp,TRUE));
+          $this->_id = CRM_Utils_Request::retrieve('id', 'Positive', $this, TRUE);
+          $this->_eventid = CRM_Utils_Request::retrieve('eventid', 'Positive', $this, TRUE);          
+          $newTrialNum = $this->get_next_trial_number() + 1;
           $this->setDefaults(array( 
+            'ta_id' => $this->_id,
             'event_id' => $this->_eventid,
             'trial_number' => $newTrialNum,
           ));
@@ -60,7 +60,7 @@ class CRM_TrialAdmin_Form_EditComponent extends CRM_Core_Form {
   public function buildQuickForm() {
 	  
 	 // add form elements
-   $this->add('text','event_id','Event ID', TRUE);
+   $this->add('text','ta_id','TrialAdmin ID', TRUE);
    $this->add('text','trial_number','Trial Number',TRUE);
    $this->add('datepicker','trial_date', ts('Trial Date'), array('class' => 'some-css-class'), TRUE, array('time' => FALSE, 'date' => 'mm-dd-yy', 'minDate' => '2021-01-01') );
   
@@ -97,7 +97,7 @@ class CRM_TrialAdmin_Form_EditComponent extends CRM_Core_Form {
 
   public function postProcess() {
     $values = $this->exportValues();
-    error_log("Post processing Validation...Edit".print_r($values, TRUE));
+    error_log("Post processing Validation...Edit".print_r($this, TRUE));
     $started_components = '';
     $advanced_components = '';
     $excellent_components = '';
@@ -107,37 +107,42 @@ class CRM_TrialAdmin_Form_EditComponent extends CRM_Core_Form {
     foreach ($values['excellent_components'] as $value) {$excellent_components .= $value.', '; }
     foreach ($values['games_components'] as $value) {$games_components .= $value.', '; }
     $id = $this->_id;
+    $eventid = $this->_eventid;
+    error_log("Elite offered: ".$values['elite_offered']);
+    if ($values['elite_offered'] != 1) {$elite = '';} else {$elite = $values['elite_offered'];}
     if ($values["_qf_EditComponent_submit"] = "Submit") {
   	  if ($this->_action == 2){
       	$values["id"] = $this->_id;
 		    $result = civicrm_api3('TrialComponents', 'create', [
 		      'id' 	=> $values['id'],
-          'event_id' => $values['event_id'],
+          'ta_id' => $values['ta_id'],
+          'event_id' => $eventid,
 		      'trial_number' => $values['trial_number'],
 		      'trial_date' => $values['trial_date'],
           'judge' => $values['judge'],
           'started_components' => $started_components,
           'advanced_components' => $advanced_components, 
           'excellent_components' => $excellent_components,
-          'elite_offered' => $values['elite_offered'],
+          'elite_offered' => $elite,
           'games_components' => $games_components,
 		    ]); 
 	    } elseif ($this->_action == 1) {
         $result = civicrm_api3('TrialComponents', 'create', [
           //'id' 	=> $values['id'],
-          'event_id' => $values['event_id'],
+          'ta_id' => $values['ta_id'],
+          'event_id' => $eventid,
           'trial_number' => $values['trial_number'],
           'trial_date' => $values['trial_date'],
           'judge' => $values['judge'],
           'started_components' => $started_components,
           'advanced_components' => $advanced_components,
           'excellent_components' => $excellent_components,
-          'elite_offered' => $values['elite_offered'],
+          'elite_offered' => $elite,
           'games_components' => $games_components,
         ]) ;
       }
     }
-    $eventid=$values['event_id'];
+    $ta_id=$values['ta_id'];
     $url = CRM_Utils_System::url( 'civicrm/event/manage/settings', "reset=1&force=1&action=update&id=$eventid" );
     CRM_Core_Session::singleton()->pushUserContext($url);
   }
@@ -184,4 +189,14 @@ class CRM_TrialAdmin_Form_EditComponent extends CRM_Core_Form {
     return $elementNames;
   }
 
+  public function get_next_trial_number() {
+
+    $query = "SELECT max(trial_number) as `h1` FROM `civicrm_trial_components`";;
+    $dao = CRM_Core_DAO::executeQuery( $query );
+    $dao->fetch();
+    error_log("Trial numbers: ".$dao->h1);
+    $highesttrialnumber = $dao->h1;
+    error_log("Highest trial number ".$highesttrialnumber);
+    return($highesttrialnumber);
+  }
 }

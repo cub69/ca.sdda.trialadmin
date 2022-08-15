@@ -76,8 +76,7 @@ CRM.$(function($) {
   <td>{$component.games_components}</td>
   <td><a href='{crmURL p="civicrm/addcomponent" q="reset=1&action=update&id=`$component.id`"}' class="crm-popup"> Edit </a><a href="javascript:deleteComponent({$component.id})"> Delete </a></td></tr>
 {/foreach}
-  <a title="Add a Component" class="button_name button crm-popup" href='{crmURL p="civicrm/addcomponent" q="reset=1&action=add&id=`$form.id.value`"}'>
-  <span>Add Component</span>
+<span>Add Component</span>
 </a>
 </table>
 

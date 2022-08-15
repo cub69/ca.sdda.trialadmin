@@ -124,6 +124,7 @@ class CRM_TrialAdmin_Form_AddComponent extends CRM_Core_Form {
     foreach ($values['advanced_components'] as $value) {$advanced_components .= $value.', '; }
     foreach ($values['excellent_components'] as $value) {$excellent_components .= $value.', '; }
     foreach ($values['games_components'] as $value) {$games_components .= $value.', '; }
+    if ($values['elite_offered'] != 1) {$elite = '';} else {$elite = $values['elite_offered'];}
     if ($values["_qf_AddComponent_done"]) {
   	  if ($this->_action == 2){
       	$values["id"] = $this->_id;
@@ -137,7 +138,7 @@ class CRM_TrialAdmin_Form_AddComponent extends CRM_Core_Form {
           'started_components' => $values['started_components'],
           'advanced_components' => $advanced_components,
           'excellent_components' => $excellent_components,
-          'elite_offered' => $values['elite_offered'],
+          'elite_offered' => $elite,
           'games_components' => $games_components,
 		    ]); 
 	    } elseif ($this->_action == 1) {
@@ -151,7 +152,7 @@ class CRM_TrialAdmin_Form_AddComponent extends CRM_Core_Form {
           'started_components' => $started_components,
           'advanced_components' => $advanced_components,
           'excellent_components' => $excellent_components,
-          'elite_offered' => $values['elite_offered'],
+          'elite_offered' => $elite,
           'games_components' => $games_components,
         ]) ;
       }

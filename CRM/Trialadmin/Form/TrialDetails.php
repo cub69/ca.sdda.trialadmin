@@ -20,18 +20,21 @@ class CRM_Trialadmin_Form_TrialDetails extends CRM_Core_Form {
 //    error_log(print_r($this, TRUE));
     if ($this->_name == "TrialDetails") {
       //$eventID = $context['event_id'];
-      $this->_eID = CRM_Utils_Request::retrieve('id', 'Positive', $this, TRUE);
-      $id = $this->_eID;
       
-      $event = civicrm_api3('TrialAdmin', 'get', ['event_id' => $id,]);
-      $eventid = $event["id"];
-      $components = civicrm_api3('TrialComponents', 'get', ['event_id' => $eventid]);
+      $this->_eID = CRM_Utils_Request::retrieve('id', 'Positive', $this, TRUE);
+      $eventid = $this->_eID;
+      
+      $event = civicrm_api3('TrialAdmin', 'get', ['event_id' => $eventid,]);
+      $id = $event["id"];
+      
+      error_log("This is the event:".$eventid." ".$id);
+      $components = civicrm_api3('TrialComponents', 'get', ['ta_id' => $id]);
       //$id = "355";
       error_log(print_r($event,TRUE));
-      error_log("This is the event:".print_r($id, TRUE));
+      
       error_log("Building the form for...".print_r($eventid,TRUE));
       
-      $details = $event['values'][$eventid];
+      $details = $event['values'][$id];
       error_log("Details: ".print_r($details,TRUE));
       $this->_approved_status = $details['approved'];
       $this->setDefaults(array( 
@@ -549,5 +552,4 @@ class CRM_Trialadmin_Form_TrialDetails extends CRM_Core_Form {
     }
     return $elementNames;
   }
-
 }
