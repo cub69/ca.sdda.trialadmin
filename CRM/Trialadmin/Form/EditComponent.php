@@ -21,9 +21,13 @@ class CRM_TrialAdmin_Form_EditComponent extends CRM_Core_Form {
 	  CRM_Utils_System::setTitle(E::ts('Add/Edit Component'));
 	  $this->_action = CRM_Utils_Request::retrieve('action', 'String', $this);	
 	  error_log("The action of this record is: ".$this->_action);
-    
+    global $current_user;
+    $params = array('email' => $current_user->user_email,'display_name' => $current_user->display_name,);
+    $cuser = get_single_contact($params);
+
     if ($this->_action == 2) {
-      $this->_id = CRM_Utils_Request::retrieve('id', 'Positive', $this, TRUE);
+      $id = CRM_Utils_Request::retrieve('id', 'Positive', $this, TRUE);
+      $this->_id = $id;
       $this->_eventid = CRM_Utils_Request::retrieve('eventid', 'Positive', $this, TRUE);
       error_log("The ID of this record is: ".$this->_id);
       $components = civicrm_api3('TrialComponents', 'get', ['id' => $this->_id,]);
@@ -42,6 +46,14 @@ class CRM_TrialAdmin_Form_EditComponent extends CRM_Core_Form {
             'elite_offered' => $component['elite_offered'],
             'games_components' => $component['games_components'],
         ));
+        $result = civicrm_api3('Trialadmin_log', 'create',[
+          'trial_id' => $component['ta_id'],
+          'entity_id' => '250',
+          'entity' => "Edit Components",
+          'data' => "Edit trial components",
+         'modified_id' => $cuser['contact_id'],
+          'modified_date' => date('Y-m-d H:i:s'),
+        ]); 
         //error_log('Started components: '. print_r($component['started_components'], TRUE));
     } elseif ($this->_action == 1) {
           error_log("processing as new");  
@@ -53,6 +65,14 @@ class CRM_TrialAdmin_Form_EditComponent extends CRM_Core_Form {
             'event_id' => $this->_eventid,
             'trial_number' => $newTrialNum,
           ));
+          $result = civicrm_api3('Trialadmin_log', 'create',[ 
+            'trial_id' => $this->_id,
+            'entity_id' => '250',
+            'entity' => "Edit Components",
+            'data' => "Processing as new trial",
+            'modified_id' => $cuser['contact_id'],
+            'modified_date' => date('Y-m-d H:i:s'),
+          ]);  
           error_log("processing as new completed setting defaults");
       }
   }

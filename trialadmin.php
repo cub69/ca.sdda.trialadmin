@@ -170,14 +170,28 @@ function trialadmin_civicrm_tabset($tabsetName, &$tabs, $context) {
         'valid' => 1,
         'active' => 1,
         'current' => false,
-      ];      
+      ];
+      $url = CRM_Utils_System::url( 'civicrm/event/manage/Trialadmin/Triallog', "reset=1&force=1&id=$eid" );
+      $tab['Trial Log'] = [
+        'title' => "Trial Log",
+        'link' => $url,
+        'valid' => 1,
+        'active' => 1,
+        'current' => false,
+      ];
+
   }
   else {
     $tab['Administration'] = array(
     'title' => "Administration",
       'url' => 'civicrm/Tdetails',
     );
+    $tab['Trial Log'] = array(
+      'title' => "Trial Log",
+      'url' => 'civicrm/tlog');
+
   };
+
   //Insert this tab into position 4
   $tabs = array_merge(
     array_slice($tabs, 0, 2),

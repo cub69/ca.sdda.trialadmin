@@ -42,4 +42,10 @@
     <title>CheckRP</title>
     <access_arguments>access CiviCRM</access_arguments>
   </item>
+  <item>
+    <path>civicrm/event/manage/Trialadmin/Triallog</path>
+    <page_callback>CRM_Trialadmin_Page_Triallog</page_callback>
+    <title>Triallog</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
 </menu>
