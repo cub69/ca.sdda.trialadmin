@@ -19,7 +19,6 @@ class CRM_TrialAdmin_Form_AddComponent extends CRM_Core_Form {
 	  CRM_Utils_System::setTitle(E::ts('Add Component'));
 	  $this->_action = CRM_Utils_Request::retrieve('action', 'String', $this);	
 	  error_log("The action of this record is: ".$this->_action);
-    
     if ($this->_action == 2) {
       $this->_id = CRM_Utils_Request::retrieve('id', 'Positive', $this, TRUE);
       $id=$this->_id;
@@ -49,7 +48,7 @@ class CRM_TrialAdmin_Form_AddComponent extends CRM_Core_Form {
           $query = "SELECT max( `trial_number` ) as last_trial_number FROM `civicrm_trial_components`";
 	        $comp1 = $wpdb->get_results( $query );
           $newTrialNum = $comp1[0]->last_trial_number+1;
-          $this->setDefaults(array('ta_id' => $ta_id,'trial_number' => $newTrialNum,));
+          $this->setDefaults(array('ta_id' => $ta_id,'trial_number' => $newTrialNum, 'event_id' => $eventid,));
     }
 
     error_log("processing as new completed setting defaults");
@@ -61,6 +60,7 @@ class CRM_TrialAdmin_Form_AddComponent extends CRM_Core_Form {
 	 // add form elements
    $this->add('text','id','id', TRUE);
    $this->add('text','ta_id','ta_id', TRUE);
+   $this->add('text','event_id','event_id', TRUE);
    $this->add('text','trial_number','Trial Number',TRUE);
    $this->add('datepicker','trial_date', ts('Trial Date'), array('class' => 'some-css-class'), TRUE, array('time' => FALSE, 'date' => 'mm-dd-yy', 'minDate' => '2021-01-01') );
   
@@ -120,7 +120,7 @@ class CRM_TrialAdmin_Form_AddComponent extends CRM_Core_Form {
     $advanced_components = '';
     $excellent_components = '';
     $games_components = '';
-    //foreach ($values['started_components'] as $value) {$started_components .= $value.', '; }
+    foreach ($values['started_components'] as $value) {$started_components .= $value.', '; }
     foreach ($values['advanced_components'] as $value) {$advanced_components .= $value.', '; }
     foreach ($values['excellent_components'] as $value) {$excellent_components .= $value.', '; }
     foreach ($values['games_components'] as $value) {$games_components .= $value.', '; }

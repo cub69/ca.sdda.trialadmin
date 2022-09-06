@@ -17,8 +17,7 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
     $this->assign('url',$this->_url);
     $id = $this->_id;
     $action = $this->_action;
-    global $current_user;
-    #error_log(print_r($current_user,TRUE));
+    error_log("Event in command line is: ".$id);
     if ( is_user_logged_in() != TRUE ) {
       #User is not logged in, return them to the home page
       error_log("User is not logged in");
@@ -44,10 +43,9 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
     #error_log(print_r($resultdetails,TRUE));
     #error_log("Action starting is: ".$action);
 
-    global $current_user;
       
     // Temp create trial admin entry to assign ID too
-    if ($id <= 0) {
+    if ($action == 'add') {
       $result = civicrm_api3('TrialAdmin', 'create', ['approved' => 0,]); 
       $id = $result['id'];
       error_log("New ID is: ".$id );
@@ -58,13 +56,16 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
         'Location_country' => 'Canada',
       ));  
     } else {
+      error_log("Executing an update: ".$id);
       $result = civicrm_api3('TrialAdmin', 'get', ['id' => $id]);
+      //$id = $result['id'];
       $values = $result['values'][$id];
-      error_log("Retrieved record: ".print_r($values,TRUE));
+      $eventid = $values['event_id'];
+      error_log("Retrieved record: ".print_r($result,TRUE));
       $this->setDefaults(array(
         'id' => $values['id'],
         'ta_id' => $values['ta_id'],
-        'event_id' => $event_id,
+        'event_id' => $eventid,
         'approved' => 0,
         'hosting_club' => $values['hosting_club'],
         'Requester' => $values['Requester'],
@@ -123,7 +124,7 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
     $this->addButtons(array(
       array(
         'type' => 'done',
-        'name' => E::ts('Submit Application'),
+        'name' => E::ts('Done'),
         'isDefault' => FALSE,
       ),
       array(
@@ -186,14 +187,15 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
     $values = $this->exportValues();
     $$values = $this->exportValues();
     //error_log("The retrieved values from the form are: ".print_r($values, TRUE));
+    
     if ($values["_qf_TrialApplication_submit"] ) {
-      error_log("The value of event: ".$event_id);
-      if ($event_id == null ) {
-      $event_id = $this->createEvent($values);
+      error_log("Add component Selected for: ".$id);
+      if ($action == 'add' ) {
+      $eventid = $this->createEvent($values);
       }
       $result = civicrm_api3('TrialAdmin', 'create', [
             'id' => $values['id'],
-            'event_id' => $event_id,
+            'event_id' => $eventid,
             'approved' => 0,
             'hosting_club' => $values['hosting_club'],
             'Requester' => $values['Requester'],
@@ -224,12 +226,13 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
           header ("Refresh: 2;URL='$location'"); 
     }
     if ($values["_qf_TrialApplication_done"] ) {
-      if ($event_id == null ) {
-        $event_id = $this->createEvent($values);
+      error_log("Done button - finished editing or ready to submit ".$id);
+      if ($action == 'add') {
+        $eventid = $this->createEvent($values);
         }
       $result = civicrm_api3('TrialAdmin', 'create', [
             'id' => $values['id'],
-            'event_id' => $event_id,
+            'event_id' => $eventid,
             'approved' => 0,
             'hosting_club' => $values['hosting_club'],
             'Requester' => $values['Requester'],
