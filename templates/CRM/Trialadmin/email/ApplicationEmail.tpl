@@ -7,7 +7,7 @@
 <hr />
 
 <p>A new trial application has been received.  <strong>Please note that all information in this email is conditional on SDDA approvals.  Trial numbers seen below are only placeholders at this time.  You will receive a separate email when approval is granted.</strong></p>
-
+<p>To update or change your trial, please go to https://www.sportingdetectiondogs.ca/civiCRM/?page=CiviCRM&q=civicrm%2Ftrialapplication&action=update&reset=1&force=1&id={$id}</p>
 <p><span>The details of the submission are as follows:</span></p>
 <table border='1' cellpadding='1' cellspacing='5'columns=2</tr>
 <tr><td>Requester</td><td>{$display_name}</td><tr>
