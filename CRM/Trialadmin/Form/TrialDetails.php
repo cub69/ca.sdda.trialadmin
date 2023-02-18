@@ -283,7 +283,6 @@ class CRM_Trialadmin_Form_TrialDetails extends CRM_Core_Form {
         $finish_date = max($date_ar);
         $trial_chair = civicrm_api3('Contact', 'getsingle', ['sequential' => 1,'id' => $values['trial_chairperson'],]);
         $trial_secretary = civicrm_api3('Contact', 'getsingle', ['sequential' => 1,'id' => $values['trial_secretary'],]);
-        error_log(print_r($trial_chair, TRUE));
         $template ->assign('trial_chairperson', $trial_chair);
         $template ->assign('trial_secretary', $trial_secretary);
 
