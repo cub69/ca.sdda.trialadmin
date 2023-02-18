@@ -8,7 +8,7 @@ Location:
 {$province.name}<br></p>
 </strong>
 
-<p>&nbsp;Your trial chairperson is <strong>{$trial_chairperson.display_name}</strong>, and the trial secretary is <strong>{$trial_secretary.display_name}</strong>.  Please contact them if you have any questions.</p>
+<p>&nbsp;Your trial chairperson is <strong>{$trial_chairperson.display_name}</strong> {mailto address=$trial_chairperson.email}, and the trial secretary is <strong>{$trial_secretary.display_name}</strong> {mailto address=$trial_secretary.email}.  Please contact them if you have any questions.</p>
 
 
 <table border='1' cellpadding='5' cellspacing='5'><tr class="crm-entity" id="TrialComponents" style='border-bottom: 1px solid black'><th>Trial Number</th><th>Trial Date</th><th>Judge</th><th>Started</th><th>Advanced</th><th>Excellent</th><th>Elite Offered</th><th>Games</th></tr>
