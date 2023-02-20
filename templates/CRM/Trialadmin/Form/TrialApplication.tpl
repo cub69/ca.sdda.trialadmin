@@ -1,4 +1,5 @@
 {* HEADER *}
+
 <script language="JavaScript" type="text/javascript">
 {literal}
 CRM.$(function($) {
@@ -62,21 +63,24 @@ CRM.$(function($) {
 {/foreach}
 
 {* FIELD EXAMPLE: OPTION 1 (AUTOMATIC LAYOUT) *}
-<h3>Trial Components</h3>
-<table border='1' cellpadding='5' cellspacing='5'><tr class="crm-entity" id="TrialComponents" style='border-bottom: 1px solid black'><th>Trial Date</th><th>Judge</th><th>Started</th><th>Advanced</th><th>Excellent</th><th>Elite Offered</th><th>Games</th></tr>
-{crmAPI var='result' entity='TrialComponents' action='get' ta_id = $form.id.value}
-{foreach from=$result.values item=component}
-  {crmAPI var='judge' entity='Contact' action='getsingle' contact_id = $component.judge}
-  <tr><td>{$component.trial_date}</td>
-  <td>{$judge.display_name}</td>
-  <td>{$component.started_components}</td>
-  <td>{$component.advanced_components}</td>
-  <td>{$component.excellent_components}</td>
-  <td>{$component.elite_offered}</td>
-  <td>{$component.games_components}</td>
-  <td><a href='{crmURL p="civicrm/addcomponent" q="reset=1&action=update&id=`$component.id`"}' class="crm-popup"> Edit </a><a href="javascript:deleteComponent({$component.id})"> Delete </a></td></tr>
-{/foreach}
-<span>Add Component</span>
-</a>
-</table>
-
+{if $form.id.value != ''}
+  <h3>Trial Components</h3>
+  <table border='1' cellpadding='5' cellspacing='5'><tr class="crm-entity" id="TrialComponents" style='border-bottom: 1px solid black'><th>Trial Date</th><th>Judge</th><th>Started</th><th>Advanced</th><th>Excellent</th><th>Elite Offered</th><th>Games</th></tr>
+  {crmAPI var='result' entity='TrialComponents' action='get' ta_id = $form.id.value}
+  {foreach from=$result.values item=component}
+    {crmAPI var='judge' entity='Contact' action='getsingle' contact_id = $component.judge}
+    <tr><td>{$component.trial_date}</td>
+    <td>{$judge.display_name}</td>
+    <td>{$component.started_components}</td>
+    <td>{$component.advanced_components}</td>
+    <td>{$component.excellent_components}</td>
+    <td>{$component.elite_offered}</td>
+    <td>{$component.games_components}</td>
+    <td><a href='{crmURL p="civicrm/addcomponent" q="reset=1&action=update&id=`$component.id`"}' class="crm-popup"> Edit </a><a href="javascript:deleteComponent({$component.id})"> Delete </a></td></tr>
+  {/foreach}
+  </a>
+  </table>
+{/if}
+<div class="crm-submit-buttons">
+{include file="CRM/common/formButtons.tpl" location="bottom"}
+</div>

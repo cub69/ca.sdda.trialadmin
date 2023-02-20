@@ -10,7 +10,7 @@ use CRM_Trialadmin_ExtensionUtil as E;
 class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
   public $action;
   public function preProcess() {
-  
+    global $current_user;
     CRM_Utils_System::setTitle(E::ts('Trial Application'));
     $this->_action = CRM_Utils_Request::retrieve('action', 'String', $this);
     $this->_id = CRM_Utils_Request::retrieve('id', 'String', $this);
@@ -18,6 +18,7 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
     $id = $this->_id;
     $action = $this->_action;
     error_log("Event in command line is: ".$id);
+    error_log("Event action is: ".$action);
     if ( is_user_logged_in() != TRUE ) {
       #User is not logged in, return them to the home page
       error_log("User is not logged in");
@@ -32,6 +33,8 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
     }
     # RP Check
     $params = array('email' => $current_user->user_email,'display_name' => $current_user->display_name,);
+    error_log("Preparing for member: ".print_r($params, TRUE));
+
     $cuser = get_single_contact($params);
     //$cuser = civicrm_api3('Contact', 'getsingle', ['email' => $current_user->user_email,'display_name' => $current_user->display_name,]);
     #error_log(print_r($cuser,TRUE));
@@ -45,7 +48,7 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
 
       
     // Temp create trial admin entry to assign ID too
-    if ($action == 'add') {
+    if ($action == '1') {
       $result = civicrm_api3('TrialAdmin', 'create', ['approved' => 0,]); 
       $id = $result['id'];
       error_log("New ID is: ".$id );
@@ -186,11 +189,13 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
   public function postProcess() {
     $values = $this->exportValues();
     $$values = $this->exportValues();
+    $action = $this->_action;
+
     //error_log("The retrieved values from the form are: ".print_r($values, TRUE));
     
     if ($values["_qf_TrialApplication_submit"] ) {
       error_log("Add component Selected for: ".$id);
-      if ($action == 'add' ) {
+      if ($action == '1' ) {
       $eventid = $this->createEvent($values);
       }
       $result = civicrm_api3('TrialAdmin', 'create', [
@@ -227,7 +232,7 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
     }
     if ($values["_qf_TrialApplication_done"] ) {
       error_log("Done button - finished editing or ready to submit ".$id);
-      if ($action == 'add') {
+      if ($action == '1') {
         $eventid = $this->createEvent($values);
         }
       $result = civicrm_api3('TrialAdmin', 'create', [
@@ -359,8 +364,8 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
       'event_full_text' => $my_event_summary,
       'title' => $my_event_summary,
       'description' => $my_event_summary,
-      'start_date' => date("12/31/2022"),
-      'end_date' => date("12/31/2022"),
+      'start_date' => date("12/31/2025"),
+      'end_date' => date("12/31/2025"),
     ));
     error_log('Creating the trialAdmin Event: '.print_r($result, TRUE));
     return($result['id']);

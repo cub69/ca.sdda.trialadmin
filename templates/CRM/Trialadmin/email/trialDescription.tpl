@@ -12,7 +12,7 @@ Location:
 
 
 <table border='1' cellpadding='5' cellspacing='5'><tr class="crm-entity" id="TrialComponents" style='border-bottom: 1px solid black'><th>Trial Number</th><th>Trial Date</th><th>Judge</th><th>Started</th><th>Advanced</th><th>Excellent</th><th>Elite Offered</th><th>Games</th></tr>
-{crmAPI var='result' entity='TrialComponents' action='get' event_id = $event_id}
+{crmAPI var='result' entity='TrialComponents' action='get' ta_id = $id}
 <tbody>
 	{foreach from=$result.values item=component}
 		{crmAPI var='judge' entity='Contact' action='getsingle' contact_id = $component.judge}
