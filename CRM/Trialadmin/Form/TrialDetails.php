@@ -29,6 +29,7 @@ class CRM_Trialadmin_Form_TrialDetails extends CRM_Core_Form {
       
       error_log("This is the event:".$eventid." ".$id);
       $components = civicrm_api3('TrialComponents', 'get', ['ta_id' => $id]);
+      
       //$id = "355";
       error_log(print_r($event,TRUE));
       
@@ -258,7 +259,7 @@ class CRM_Trialadmin_Form_TrialDetails extends CRM_Core_Form {
             ]);
             array_push($partic, $values['trial_chairperson']);
         }
-        $comp1 = civicrm_api3('TrialComponents', 'get', ['sequential' => 1, 'event_id' => $values['event_id']]);
+        $comp1 = civicrm_api3('TrialComponents', 'get', ['sequential' => 1, 'ta_id' => $values['id']]);
         $judges = $comp1['values'];
         foreach ($judges as $key=>$value) {
           if (!in_array($value['judge'], $partic)) {
@@ -301,7 +302,6 @@ class CRM_Trialadmin_Form_TrialDetails extends CRM_Core_Form {
       }
       if ($values['approved'] != $this->_approved_status) {
         error_log("Approval status has changed");
-        
         if ($values['approved'] == '1') {
           error_log("Trial Approved!");
           //prepare email to requester
@@ -365,7 +365,8 @@ class CRM_Trialadmin_Form_TrialDetails extends CRM_Core_Form {
               ]);
               array_push($partic, $values['trial_chairperson']);
           }
-          $comp1 = civicrm_api3('TrialComponents', 'get', ['sequential' => 1, 'event_id' => $values['event_id']]);
+          $comp1 = civicrm_api3('TrialComponents', 'get', ['sequential' => 1, 'ta_id' => $values['id']]);
+          error_log("Stored values are: ".print_r($values,TRUE));
           $judges = $comp1['values'];
           foreach ($judges as $key=>$value) {
             if (!in_array($value['judge'], $partic)) {
