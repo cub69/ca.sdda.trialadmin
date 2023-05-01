@@ -269,7 +269,7 @@
 			<div>{$rpstatus.end_date}</div>
 			<div style="font-size: xx-small;">You must renew every 12 months</div>
 			<div>&nbsp;</div>
-			<div style="font-size: xx-small;">WWW.SPORTINGDETECTIONDOGS.CA</div>
+			<div style="font-size: xx-small;">WWW.SDDA.CA</div>
 			</td>
 		</tr>
 	</tbody>

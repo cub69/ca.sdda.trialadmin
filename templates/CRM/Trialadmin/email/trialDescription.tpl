@@ -28,4 +28,4 @@ Location:
 </tbody>
 </table>
 
-<p><span style="color: #0000ff;"><u><a href="mailto:info@sportingdetectiondogs.ca"><span>info@sportingdetectiondogs.ca</span></a></u></span></p>
+<p><span style="color: #0000ff;"><u><a href="mailto:info@sdda.ca"><span>info@sdda.ca</span></a></u></span></p>

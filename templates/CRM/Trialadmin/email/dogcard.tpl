@@ -264,7 +264,7 @@
 			<div><small>{$dog.breed_name}</small></div>
 			<div style="font-size: xx-small;">Dog Registrations never expire.</div>
 			<div>&nbsp;</div>
-			<div style="font-size: xx-small;">WWW.SPORTINGDETECTIONDOGS.CA</div>
+			<div style="font-size: xx-small;">WWW.SDDA.CA</div>
 			</td>
 		</tr>
 	</tbody>
