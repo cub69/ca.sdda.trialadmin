@@ -320,7 +320,7 @@ class CRM_Trialadmin_Form_TrialDetails extends CRM_Core_Form {
           $turl = E::path('templates/CRM/Trialadmin/email/trialApproval.tpl');
           $emailbody = (CRM_Core_Smarty::singleton()->fetch($turl));
           $params = array();
-          $params['from'] = 'Sporting Detection Dogs Association <norm@sportingdetectiondogs.ca>';
+          $params['from'] = 'Sporting Detection Dogs Association <norm@sdda.ca>';
           $params['toName'] = $values['Requester_Name'].' '.$values['Requester_lastname'];
           $params['toEmail'] = $values['Requester_email'];
           $params['subject'] = 'Trial Approval';
@@ -461,7 +461,7 @@ class CRM_Trialadmin_Form_TrialDetails extends CRM_Core_Form {
         #error_log("File details: ".print_r($filedetail,TRUE)); 
         #error_log("URL ".$filedetail['url']);
         //$fileUrl = "<a href=".$filedetail['url'].">DOWNLOAD</a>";
-        $url = '"'.'https://www.sportingdetectiondogs.ca/civicrm/?civiwp=CiviCRM&q=civicrm%2Fevent%2Finfo&reset=1&id='.$eventid.'"';
+        $url = '"'.'https://www.sdda.ca/civicrm/?civiwp=CiviCRM&q=civicrm%2Fevent%2Finfo&reset=1&id='.$eventid.'"';
         $fileUrl = '<a href='.$url.'>EVENT</a>';
         $result['msg_html'] = str_replace("{custom.PLLink}",$fileUrl,$result['msg_html']);
         $result['msg_html'] = str_replace(" 00:00:00",'',$result['msg_html']);

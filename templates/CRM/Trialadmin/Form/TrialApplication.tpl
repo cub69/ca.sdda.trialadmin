@@ -43,7 +43,7 @@ CRM.$(function($) {
       2. Click Add Component and tell us about each day you intend on having a trial - date, judge, and component.<br>
          For a multi day or multi judge trial, you would add a new component for each.<br>
       3. When completed, click on the \"Submit\" button to finish up.<br>
-      4. Submit payment either through email transfer to stacey@sportingdetectiondogs.ca or via the store at https://www.sportingdetectiondogs.ca/product/trial-application-fee-for-trial-hosts/<br>
+      4. Submit payment either through email transfer to stacey@sdda.ca or via the store at https://www.sdda.ca/product/trial-application-fee-for-trial-hosts/<br>
          Please remember the fee is the number of trial days x $50.<br>
          An SDDA trial is defined as a single offering of any Level within a 12-hour period and will be assigned a unique trial number.<br>
       5. Wait for the SDDA To get back to you on your approvals</p>
@@ -53,15 +53,15 @@ CRM.$(function($) {
 {include file="CRM/common/formButtons.tpl" location="bottom"}
 </div>
 {if $elementName != 'id' && $elementName != 'event_id'} 
-{/if}
+
   {foreach from=$elementNames item=elementName}
     <div class="crm-section">
     <div class="label">{$form.$elementName.label}</div>
     <div class="content">{$form.$elementName.html}</div>
     <div class="clear"></div>
     </div>
-{/foreach}
-
+  {/foreach}
+{/if}
 {* FIELD EXAMPLE: OPTION 1 (AUTOMATIC LAYOUT) *}
 {if $form.id.value != ''}
   <h3>Trial Components</h3>
