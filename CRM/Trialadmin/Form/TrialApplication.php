@@ -98,8 +98,8 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
   }
 
   public function buildQuickForm() {
-    $this->add('freeze','id','id',TRUE);
-    $this->add('freeze','event_id','event_id',TRUE);
+    $this->add('hidden','id','id',TRUE);
+    $this->add('hidden','event_id','event_id',TRUE);
 
     $this->addEntityRef('Requester', ts('Select Contact'));
     $this->add('text','Requester_email','Requester Email',TRUE);
