@@ -53,7 +53,7 @@ CRM.$(function($) {
 {include file="CRM/common/formButtons.tpl" location="bottom"}
 </div>
   {foreach from=$elementNames item=elementName}
-    {if $form.$elementName.label != 'id' || $form.$elementName.label != 'event_id'} 
+    {if $form.$elementName.label != ''} 
       <div class="crm-section">
       <div class="label">{$form.$elementName.label}</div>
       <div class="content">{$form.$elementName.html}</div>
