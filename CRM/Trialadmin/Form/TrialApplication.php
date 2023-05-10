@@ -197,6 +197,7 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
       error_log("Add component Selected for: ".$id);
       if ($action == '1' ) {
       $eventid = $this->createEvent($values);
+      error_log($eventid);
       }
       $result = civicrm_api3('TrialAdmin', 'create', [
             'id' => $values['id'],
