@@ -120,8 +120,8 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
     $this->add('textarea', 'space_for_judge', 'Space for Judge',TRUE);  
     $this->add('advcheckbox', 'confirm_square_footage', 'Confirm Square Footage as per Rulebook',) ;
     $this->add('advcheckbox', 'confirm_judge_contacted', 'Confirm you have talked to the judge about venue', );
-    $this->add('text','id','DO NOT CHANGE',TRUE);
-    $this->add('text','event_id','DO NOT CHANGE',TRUE);
+    $this->add('text','id','DO NOT CHANGE',FALSE);
+    $this->add('text','event_id','DO NOT CHANGE',FALSE);
     $this->addEntityRef('trial_chairperson', ts('Select Trial Chairperson'));
     $this->addEntityRef('trial_secretary', ts('Select Trial Secretary'));
     $this->addButtons(array(
