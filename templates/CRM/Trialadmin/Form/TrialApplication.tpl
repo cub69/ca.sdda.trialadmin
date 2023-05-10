@@ -52,16 +52,15 @@ CRM.$(function($) {
 <div class="crm-submit-buttons">
 {include file="CRM/common/formButtons.tpl" location="bottom"}
 </div>
-{if $elementName != 'id' && $elementName != 'event_id'} 
-
   {foreach from=$elementNames item=elementName}
-    <div class="crm-section">
-    <div class="label">{$form.$elementName.label}</div>
-    <div class="content">{$form.$elementName.html}</div>
-    <div class="clear"></div>
-    </div>
+    {if $form.$elementName.label != 'id' || $form.$elementName.label != 'event_id'} 
+      <div class="crm-section">
+      <div class="label">{$form.$elementName.label}</div>
+      <div class="content">{$form.$elementName.html}</div>
+      <div class="clear"></div>
+      </div>
+    {/if}
   {/foreach}
-{/if}
 {* FIELD EXAMPLE: OPTION 1 (AUTOMATIC LAYOUT) *}
 {if $form.id.value != ''}
   <h3>Trial Components</h3>
