@@ -83,5 +83,5 @@ CRM.$(function($) {
 {/if}
 <div class="crm-submit-buttons">
 {include file="CRM/common/formButtons.tpl" location="bottom"}
-<p><strong>NOTE: It can take a moment to open the Add Component screen - please be patient! </strong></p>
 </div>
+<p><strong>NOTE: It can take a moment to open the Add Component screen - please be patient! </strong></p>
