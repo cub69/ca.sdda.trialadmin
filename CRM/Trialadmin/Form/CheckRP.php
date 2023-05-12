@@ -33,7 +33,7 @@ class CRM_Trialadmin_Form_CheckRP extends CRM_Core_Form {
     write_log($cuser);
     $params = array('sequential' => 1,'contact_id.id' => $cuser['contact_id']);
     $result = get_single_member($params);
-    error_log("Parameters: ".print_r($params,true));
+    error_log("Parameters: ".print_r($cuser,true));
     error_log("Results: ".print_r($result,true));
 //    $cuser = civicrm_api3('Contact', 'getsingle', ['email' => $current_user->user_email,'display_name' => $current_user->display_name,]);
 //    $result = civicrm_api3('Membership', 'get', ['sequential' => 1,'contact_id.id' => $cuser['contact_id'],]);
