@@ -39,7 +39,7 @@ class CRM_Trialadmin_Form_CheckRP extends CRM_Core_Form {
 //    $result = civicrm_api3('Membership', 'get', ['sequential' => 1,'contact_id.id' => $cuser['contact_id'],]);
 
     if (isset($cuser['is_error']) || isset($result['is_error']) ) {
-      $message = "You must be an active trial host or secretary to use this feature";
+      $message = "You must be logged in and an active RP";
       $title="Not an Active Registered Participant";
       $type="Error";
       CRM_Core_Session::setStatus($message, $title, $type,);
