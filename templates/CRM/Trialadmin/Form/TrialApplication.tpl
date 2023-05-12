@@ -42,6 +42,7 @@ CRM.$(function($) {
       1. Complete the information on the screen about you, the location where you intend on holding the trial, and who is running it.<br>
       2. Click Add Component and tell us about each day you intend on having a trial - date, judge, and component.<br>
          For a multi day or multi judge trial, you would add a new component for each.<br>
+         <strong>PLEASE BE PATIENT! After you click Add Component it may take a few moments for the page to load.</strong><br>
          NOTE: It can take a moment to open the Add Component screen - please be patient!<br>
       3. When completed, click on the "Submit" button to finish up.<br>
       4. Submit payment either through email transfer to stacey@sdda.ca or via the store at https://www.sdda.ca/product/trial-application-fee-for-trial-hosts/<br>
