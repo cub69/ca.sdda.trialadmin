@@ -79,8 +79,8 @@ class CRM_Trialadmin_Form_Report_TrialNums extends CRM_Report_Form {
                           ON {$this->_aliases['civicrm_event']}.id =
                              {$this->_aliases['civicrm_trial_admin']}.event_id
                LEFT  JOIN civicrm_trial_components {$this->_aliases['civicrm_trial_components']}
-                          ON {$this->_aliases['civicrm_event']}.id =
-                             {$this->_aliases['civicrm_trial_components']}.event_id ";
+                          ON {$this->_aliases['civicrm_trial_admin']}.id =
+                             {$this->_aliases['civicrm_trial_components']}.ta_id ";
 
 
     

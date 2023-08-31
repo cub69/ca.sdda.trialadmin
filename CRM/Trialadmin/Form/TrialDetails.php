@@ -320,7 +320,7 @@ class CRM_Trialadmin_Form_TrialDetails extends CRM_Core_Form {
           $turl = E::path('templates/CRM/Trialadmin/email/trialApproval.tpl');
           $emailbody = (CRM_Core_Smarty::singleton()->fetch($turl));
           $params = array();
-          $params['from'] = 'Sporting Detection Dogs Association <norm@sdda.ca>';
+          $params['from'] = 'Sporting Detection Dogs Association <info@sdda.ca>';
           $params['toName'] = $values['Requester_Name'].' '.$values['Requester_lastname'];
           $params['toEmail'] = $values['Requester_email'];
           $params['subject'] = 'Trial Approval';

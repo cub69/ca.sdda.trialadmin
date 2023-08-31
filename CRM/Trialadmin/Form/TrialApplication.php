@@ -109,6 +109,7 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
     $this->add('text','Location_city','City',TRUE);
     $this->addEntityRef('Location_province', ts('Select Province'),
       ['entity' => 'state_province','api' => ['params' => ['country_id' => 1039]]]);
+    //$this->addAutocomplete('Location_provice', ts('Select Provice'), ['entity' => 'state_province']);
    // $this->addEntityRef('Location_country', ts('Select country'),
    //   ['entity' => 'country', 'api' => ['params' => ['country_id' => 1039]]]);
     $this->add('textarea', 'venue_description', 'Location Description',TRUE);  
@@ -286,7 +287,7 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
       $turl = E::path('templates/CRM/Trialadmin/email/ApplicationEmail.tpl');
       $emailbody = (CRM_Core_Smarty::singleton()->fetch($turl));
       $params = array();
-      $params['from'] = 'Sporting Detection Dogs Association <norm@sdda.ca>';
+      $params['from'] = 'Sporting Detection Dogs Association <info@sdda.ca>';
       $params['toName'] = $values['Requester_Name'].' '.$values['Requester_lastname'];
       $params['toEmail'] = $contact['email'];
       $params['subject'] = 'Trial Application';
@@ -305,12 +306,12 @@ class CRM_Trialadmin_Form_TrialApplication extends CRM_Core_Form {
       $turl = E::path('templates/CRM/Trialadmin/email/ApplicationEmailtoAdmin.tpl');
       $emailbody = (CRM_Core_Smarty::singleton()->fetch($turl));
       $params = array();
-      $params['from'] = 'Sporting Detection Dogs Association <norm@sdda.ca>';
+      $params['from'] = 'Sporting Detection Dogs Association <info@sdda.ca>';
       $params['subject'] = 'Trial Application for Approval';
       $params['text'] = '';
       $params['html'] = $emailbody;
       $params['toName'] = 'Trial Approvers';
-      $params['toEmail'] = 'norm@sdda.ca';
+      $params['toEmail'] = 'info@sdda.ca';
       $params['cc'] = 'karin@sdda.ca';
       CRM_Utils_Mail::send($params);
       $result = civicrm_api3('Trialadmin_log', 'create',[ 
