@@ -47,48 +47,12 @@ function trialadmin_civicrm_install() {
 }
 
 /**
- * Implements hook_civicrm_postInstall().
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_postInstall
- */
-function trialadmin_civicrm_postInstall() {
-  _trialadmin_civix_civicrm_postInstall();
-}
-
-/**
- * Implements hook_civicrm_uninstall().
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_uninstall
- */
-function trialadmin_civicrm_uninstall() {
-  _trialadmin_civix_civicrm_uninstall();
-}
-
-/**
  * Implements hook_civicrm_enable().
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_enable
  */
 function trialadmin_civicrm_enable() {
   _trialadmin_civix_civicrm_enable();
-}
-
-/**
- * Implements hook_civicrm_disable().
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_disable
- */
-function trialadmin_civicrm_disable() {
-  _trialadmin_civix_civicrm_disable();
-}
-
-/**
- * Implements hook_civicrm_upgrade().
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_upgrade
- */
-function trialadmin_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
-  return _trialadmin_civix_civicrm_upgrade($op, $queue);
 }
 
 /**
@@ -107,16 +71,7 @@ function trialadmin_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
 
 
 
-/**
- * Implements hook_civicrm_entityTypes().
- *
- * Declare entity types provided by this module.
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_entityTypes
- */
-function trialadmin_civicrm_entityTypes(&$entityTypes) {
-  _trialadmin_civix_civicrm_entityTypes($entityTypes);
-}
+
 
 // --- Functions below this ship commented out. Uncomment as required. ---
 
@@ -200,4 +155,3 @@ function trialadmin_civicrm_tabset($tabsetName, &$tabs, $context) {
   );
 }
 }
-
