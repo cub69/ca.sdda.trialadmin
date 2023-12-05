@@ -20,7 +20,7 @@ function inactivateDog(id){
 <div class="help">
       <p><strong>Registered Dogs and Cards</strong></p>
       <br>
-      <p> Welcome to your registered dogs listing.  We have added a feature for you to inactivate a dog.  There are many reasons you would want to do this, the dog is retired from the sport, or has passed away.  Inactivating will prevent the dog from being listed on these pages, but does not ever delete the dog and their earned titles.</p>
+      <p> Welcome to your registered dogs list.  We have added a feature for you to inactivate a dog.  There are many reasons you would want to do this, the dog is retired from the sport, or has passed away.  Inactivating will prevent the dog from being listed on these pages, but does not ever delete the dog and their earned titles.</p>
       
     </div>
 
